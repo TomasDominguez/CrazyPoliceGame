@@ -11,11 +11,16 @@
 package com.tomasdguez.crazypolice;
 
 import javafx.application.Application;
+import javafx.event.EventHandler;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
@@ -24,14 +29,18 @@ import javafx.stage.Stage;
  * @author Tomas
  */
 public class Main extends Application {
+    
     // Declaramos las constantes para la dimension de nuestra ventana del juego.
     final int SCENES_TAM_X = 800;
     final int SCENES_TAM_Y = 600;
     
-    // Declaramos las contantes del coche del jugador.
-    
     // Declaramos las variables de la posición del coche.
-    int posCar = (SCENES_TAM_X) / 2 ;
+    int posCar_X = ((SCENES_TAM_X) / 2 ) + 50 ;
+    int posCar_Y = (SCENES_TAM_Y)- 100 ;
+    
+    // Declaramos las variables para el coche.
+    int CAR_WIDTH = 50;
+    int CAR_HEIGHT = 80;
     
     // Declaramos la variable para el texto.
     int TEXT_SIZE = 20;
@@ -41,6 +50,9 @@ public class Main extends Application {
     
     // Declaramos la variable para la máxima puntuación.
     int highScore;
+    
+    // Declaramos la variable para la velocidad del coche.
+    int carSpeed = 0 ;
     
     // Declaramos la variable textScore para el uso del boton "Start" y "ResetGame".
     Text textScore;
@@ -66,17 +78,30 @@ public class Main extends Application {
             root.getChildren().add(line);
         }
     }
-    
+    // Declaramos el metodo de las lineas exteriores delimitantes. 
+    private void lineas () {
+       
+    }
     // Declaramos el metodo para dibujar el fondo negro de la pista.
     private void fondoPista() {
-        Rectangle pista = new Rectangle(SCENES_TAM_X/2, SCENES_TAM_Y);
+        Rectangle pista = new Rectangle(200, 0, SCENES_TAM_X/2, SCENES_TAM_Y);
         pista.setStroke(Color.BLACK);
-        //pista.isPointInPath(SCENES_TAM_X/2, SCENES_TAM_Y);
         root.getChildren().add(pista);
     }    
     
+    private void coche (){
+         // Creamos el objeto Rectangulo para el coche.
+        Rectangle rectCar = new Rectangle(posCar_X, posCar_Y, CAR_WIDTH, CAR_HEIGHT);
+        rectCar.setFill(Color.GRAY);
+        Rectangle techoCar = new Rectangle(posCar_X, posCar_Y, CAR_WIDTH, (CAR_HEIGHT/2));
+        techoCar.setFill(Color.BLUE);
+        root.getChildren().add(rectCar);
+        root.getChildren().add(techoCar);
+    }
+    
     @Override
     public void start(Stage primaryStage) {
+        
         // Declaramos dimensiones y color de fondo de la pantalla del juego.
         root = new Pane();
         Scene scene = new Scene(root, SCENES_TAM_X, SCENES_TAM_Y, Color.GREEN); //Color de Fondo.
@@ -87,9 +112,77 @@ public class Main extends Application {
         //Llamamos al metodo del fondo de la Pista.
         fondoPista();
         
-        // LLamamos al metodo de las lineas.
+        // Llamamos al metodo de las lineas discontinuas.
         lineasPista(20,6,40);
         
+        // Llamamos al metodo de las lineas exteriores delimitantes.
+        lineas();
+        
+        // LLamada al metodo del coche.
+        coche();
+        
+        // Creamos los marcadores de máxima puntuación y la puntuación de partida.
+        // Creamos el primer LAYOUTS.
+        HBox paneScores = new HBox();
+        paneScores.setTranslateY(10);
+        paneScores.setMinWidth(SCENES_TAM_X);
+        paneScores.setAlignment(Pos.CENTER);
+        paneScores.setSpacing(0);
+        root.getChildren().add(paneScores);
+                
+        // Creamos el segundo LAYOUTS para la puntuación de partida.
+        HBox paneCurrentScores = new HBox();
+        paneCurrentScores.setSpacing(80);
+        paneScores.getChildren().add(paneCurrentScores);
+        
+        // Creamos el tercer LAYOUTS para la puntuación máxima de partida.
+        HBox paneHighScores = new HBox();
+        paneHighScores.setSpacing(10);
+        paneScores.getChildren().add(paneHighScores);
+        
+        // Creamos la Etiqueta texto para la puntuación de partida.
+        textTitleScore = new Text("PUNTOS:");
+        textTitleScore.setFont(Font.font(TEXT_SIZE));
+        textTitleScore.setFill(Color.WHITE);
+        
+        // Creamos el Resultado de la puntuación de partida.
+        textScore = new Text(String.valueOf(score));
+        textScore.setFont(Font.font(TEXT_SIZE));
+        textScore.setFill(Color.WHITE); 
+       
+        // Creamos la Etiqueta para Máxima Puntuación.
+        textTitleMaxScore = new Text("PUNTOS MAX:");
+        textTitleMaxScore.setFont(Font.font(TEXT_SIZE));
+        textTitleMaxScore.setFill(Color.WHITE);
+        
+        // Creamos el Resultado de la puntación de Max Puntuación.
+        textMaxScore = new Text(String.valueOf(highScore));
+        textMaxScore.setFont(Font.font(TEXT_SIZE));
+        textMaxScore.setFill(Color.WHITE);
+        
+        // Añadimos los textos a los LAYOUTS reservados para ellos.
+        paneCurrentScores.getChildren().add(textTitleScore);
+        paneCurrentScores.getChildren().add(textScore);
+        paneCurrentScores.getChildren().add(textTitleMaxScore);
+        paneCurrentScores.getChildren().add(textMaxScore);
+        
+        scene.setOnKeyReleased(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+               // Sentencia de control. Responde el movimiento al pulsar las teclas.
+                scene.setOnKeyPressed((KeyEvent event) -> {
+                    switch(event.getCode()){
+                        case LEFT:
+                            // Pulsa tecla izquierda.
+                            carSpeed = -6;
+                            break;
+                        case RIGHT:
+                            // Pulsa tecla derecha.
+                            carSpeed = 6;
+                            break;
+                    }     
+                }
+            });
+        }
     }
-    
 }
