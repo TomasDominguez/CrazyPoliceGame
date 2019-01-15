@@ -170,7 +170,7 @@ public class Main extends Application {
             @Override
             public void handle(KeyEvent event) {
                // Sentencia de control. Responde el movimiento al pulsar las teclas.
-                scene.setOnKeyPressed((KeyEvent event) -> {
+               // scene.setOnKeyPressed((KeyEvent event) -> {
                     switch(event.getCode()){
                         case LEFT:
                             // Pulsa tecla izquierda.
@@ -185,4 +185,4 @@ public class Main extends Application {
             });
         }
     }
-}
+
