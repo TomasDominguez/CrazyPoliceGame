@@ -10,11 +10,10 @@
  */
 package com.tomasdguez.crazypolice;
 
-import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.geometry.Pos;
+import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -26,7 +25,7 @@ import javafx.stage.Stage;
 
 /**
  *
- * @author Tomas
+ * @author Tomas de Aquino Dominguez Gómez
  */
 public class Main extends Application {
     
@@ -75,30 +74,75 @@ public class Main extends Application {
             Line line = new Line(SCENES_TAM_X/2, i, SCENES_TAM_X/2, i+portionHeight);
             line.setStroke(Color.WHITE); // Color de la linea.
             line.setStrokeWidth(portionWidth);
-            root.getChildren().add(line);
+                                   //(inicioStartX, inicioStartY, InicioFinalX, InicioFinalY)
+            Line lineLeft = new Line (SCENES_TAM_X/4, SCENES_TAM_Y, SCENES_TAM_X/4, SCENES_TAM_Y - 600);
+            lineLeft.setStroke(Color.WHITE);
+            lineLeft.setStrokeWidth(portionWidth);
+            
+            Line lineRight = new Line ((SCENES_TAM_X/4)+400, SCENES_TAM_Y, (SCENES_TAM_X/4)+400, SCENES_TAM_Y - 600);
+            lineRight.setStroke(Color.WHITE);
+            lineRight.setStrokeWidth(portionWidth);
+            
+            root.getChildren().addAll(line, lineLeft, lineRight);
         }
     }
-    // Declaramos el metodo de las lineas exteriores delimitantes. 
-    private void lineas () {
-       
-    }
+
     // Declaramos el metodo para dibujar el fondo negro de la pista.
     private void fondoPista() {
         Rectangle pista = new Rectangle(200, 0, SCENES_TAM_X/2, SCENES_TAM_Y);
         pista.setStroke(Color.BLACK);
         root.getChildren().add(pista);
     }    
-    // Declaramos el metodo para dibujar el fondo del marcador.
-    private void barraSup(){
-        Rectangle marcadorS = new Rectangle (50, 0, SCENES_TAM_X, SCENES_TAM_Y);
-        marcadorS.setStroke(Color.DARKGRAY);
-        Rectangle marcador = new Rectangle (40, 0, SCENES_TAM_X, SCENES_TAM_Y);
-        marcador.setStroke(Color.WHITESMOKE);
-        root.getChildren().addAll(marcadorS, marcador);
+//    // Declaramos el metodo para dibujar el fondo del marcador.
+//    private void barraSup(){
+//        Rectangle marcadorS = new Rectangle (0, 100, SCENES_TAM_X, SCENES_TAM_Y);
+//        marcadorS.setStroke(Color.DARKGRAY);
+//        Rectangle marcador = new Rectangle (0, 50, SCENES_TAM_X, SCENES_TAM_Y);
+//        marcador.setStroke(Color.WHITESMOKE);
+//        root.getChildren().addAll(marcadorS, marcador);
+//    }
+    
+
+    
+    // Declaramos el metodo para el resto de coches.
+    private void cocheObj () {
+        Rectangle rectCar = new Rectangle(posCar_X, posCar_Y, CAR_WIDTH, CAR_HEIGHT);
+        rectCar.setFill(Color.LIGHTGREEN);
+        
+        Rectangle rectCarSom = new Rectangle((posCar_X + 2.5), (posCar_Y + 2.5), (CAR_WIDTH - 5), (CAR_HEIGHT -5));
+        rectCarSom.setFill(Color.GREEN);
+        
+        Rectangle techoCar = new Rectangle((posCar_X + 3), (posCar_Y + 20), (CAR_WIDTH - 6 ), (CAR_HEIGHT / 2));
+        techoCar.setFill(Color.YELLOWGREEN);
+        
+        root.getChildren().addAll(rectCar, rectCarSom, techoCar);
+        
     }
-    // Declaramos el metodo para dibujar el coche de police.
-    private void coche (){
-        // Creamos el objeto Rectangulo para el coche.
+    
+    // Declaramos el metodo para dibujar el obstaculo.
+    private void arbol () {
+        
+       
+    }
+    
+    // Declaramos el metodo para dibujar el obstaculo.
+    private void piedra () {
+    
+        
+    }
+    
+    @Override
+    public void start(Stage primaryStage) {
+        
+        // Declaramos dimensiones y color de fondo de la pantalla del juego.
+        root = new Pane();
+        Scene scene = new Scene(root, SCENES_TAM_X, SCENES_TAM_Y, Color.GREEN); //Color de Fondo.
+        primaryStage.setTitle("Crazy Police");
+        //primaryStage.getIcons().add(new Image ("fileName.png")) // Icono Aplicación.
+        primaryStage.setScene(scene);
+        primaryStage.show();
+        
+        // Creamos las variables y objetos de tipo Rectangulo para el coche Player.
         Rectangle rectCar = new Rectangle(posCar_X, posCar_Y, CAR_WIDTH, CAR_HEIGHT);
         rectCar.setFill(Color.GREY);
         
@@ -114,33 +158,24 @@ public class Main extends Application {
         Rectangle luzDerCar = new Rectangle((posCar_X + 25), (posCar_Y + 35), ((CAR_WIDTH / 2) - 6), ((CAR_HEIGHT / 4) / 2));
         luzDerCar.setFill(Color.LIGHTBLUE);
         
-        root.getChildren().addAll(rectCar, rectCarSom, techoCar, luzIzqCar, luzDerCar);
-    }
-    
-    @Override
-    public void start(Stage primaryStage) {
-        
-        // Declaramos dimensiones y color de fondo de la pantalla del juego.
-        root = new Pane();
-        Scene scene = new Scene(root, SCENES_TAM_X, SCENES_TAM_Y, Color.GREEN); //Color de Fondo.
-        primaryStage.setTitle("Crazy Police");
-        primaryStage.setScene(scene);
-        primaryStage.show();
+        // Llamamos al metodo del marcador.
+        //barraSup();
         
         //Llamamos al metodo del fondo de la Pista.
         fondoPista();
         
-        // Llamamos al metodo del marcador.
-       // barraSup();
-        
         // Llamamos al metodo de las lineas discontinuas.
         lineasPista(20,6,40);
         
-        // Llamamos al metodo de las lineas exteriores delimitantes.
-        lineas();
+        // LLamada Grupo PlayerCar.
+        Group player = new Group();
+        player.getChildren().addAll(rectCar, rectCarSom, techoCar, luzIzqCar, luzDerCar);
+        player.setTranslateX((SCENES_TAM_X/2) + 80);
+        player.setTranslateY(SCENES_TAM_Y - 90);
+        root.getChildren().add(player);
         
-        // LLamada al metodo del coche.
-        coche();
+        // Llamada al metodo coche objeto.
+        //cocheObj();
         
         // Creamos los marcadores de máxima puntuación y la puntuación de partida.
         // Creamos el primer LAYOUTS.
