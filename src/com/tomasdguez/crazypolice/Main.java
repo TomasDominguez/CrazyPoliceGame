@@ -10,8 +10,8 @@
  */
 package com.tomasdguez.crazypolice;
 
+import javafx.animation.AnimationTimer;
 import javafx.application.Application;
-import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyEvent;
@@ -35,8 +35,8 @@ public class Main extends Application {
     final int SCENES_TAM_Y = 600;
     
     // Declaramos las variables de la posición del coche.
-    int posCar_X = ((SCENES_TAM_X) / 2 ) + 50 ;
-    int posCar_Y = (SCENES_TAM_Y)- 100 ;
+    int posCar_X = 0 ;
+    int posCar_Y = 0 ;
     
     // Declaramos las variables para el coche.
     int CAR_WIDTH = 50;
@@ -88,15 +88,33 @@ public class Main extends Application {
         pista.setStroke(Color.BLACK);
         root.getChildren().add(pista);
     }    
-    
+    // Declaramos el metodo para dibujar el fondo del marcador.
+    private void barraSup(){
+        Rectangle marcadorS = new Rectangle (50, 0, SCENES_TAM_X, SCENES_TAM_Y);
+        marcadorS.setStroke(Color.DARKGRAY);
+        Rectangle marcador = new Rectangle (40, 0, SCENES_TAM_X, SCENES_TAM_Y);
+        marcador.setStroke(Color.WHITESMOKE);
+        root.getChildren().addAll(marcadorS, marcador);
+    }
+    // Declaramos el metodo para dibujar el coche de police.
     private void coche (){
-         // Creamos el objeto Rectangulo para el coche.
+        // Creamos el objeto Rectangulo para el coche.
         Rectangle rectCar = new Rectangle(posCar_X, posCar_Y, CAR_WIDTH, CAR_HEIGHT);
-        rectCar.setFill(Color.GRAY);
-        Rectangle techoCar = new Rectangle(posCar_X, posCar_Y, CAR_WIDTH, (CAR_HEIGHT/2));
-        techoCar.setFill(Color.BLUE);
-        root.getChildren().add(rectCar);
-        root.getChildren().add(techoCar);
+        rectCar.setFill(Color.GREY);
+        
+        Rectangle rectCarSom = new Rectangle((posCar_X + 2.5), (posCar_Y + 2.5), (CAR_WIDTH - 5), (CAR_HEIGHT -5));
+        rectCarSom.setFill(Color.WHITE);
+        
+        Rectangle techoCar = new Rectangle((posCar_X + 3), (posCar_Y + 20), (CAR_WIDTH - 6 ), (CAR_HEIGHT / 2));
+        techoCar.setFill(Color.DARKBLUE);
+        
+        Rectangle luzIzqCar = new Rectangle((posCar_X +5), (posCar_Y + 35), ((CAR_WIDTH / 2) -6), ((CAR_HEIGHT / 4) / 2));
+        luzIzqCar.setFill(Color.RED);
+        
+        Rectangle luzDerCar = new Rectangle((posCar_X + 25), (posCar_Y + 35), ((CAR_WIDTH / 2) - 6), ((CAR_HEIGHT / 4) / 2));
+        luzDerCar.setFill(Color.LIGHTBLUE);
+        
+        root.getChildren().addAll(rectCar, rectCarSom, techoCar, luzIzqCar, luzDerCar);
     }
     
     @Override
@@ -111,6 +129,9 @@ public class Main extends Application {
         
         //Llamamos al metodo del fondo de la Pista.
         fondoPista();
+        
+        // Llamamos al metodo del marcador.
+       // barraSup();
         
         // Llamamos al metodo de las lineas discontinuas.
         lineasPista(20,6,40);
@@ -166,23 +187,30 @@ public class Main extends Application {
         paneCurrentScores.getChildren().add(textTitleMaxScore);
         paneCurrentScores.getChildren().add(textMaxScore);
         
-        scene.setOnKeyReleased(new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent event) {
-               // Sentencia de control. Responde el movimiento al pulsar las teclas.
-               // scene.setOnKeyPressed((KeyEvent event) -> {
-                    switch(event.getCode()){
-                        case LEFT:
-                            // Pulsa tecla izquierda.
-                            carSpeed = -6;
-                            break;
-                        case RIGHT:
-                            // Pulsa tecla derecha.
-                            carSpeed = 6;
-                            break;
-                    }     
-                }
-            });
-        }
-    }
+        // Creamos la clase animación para el movimiento.
+        // Moviemiento del coche.
+//            AnimationTimer animationCar = new AnimationTimer() {
+//
+//
+//                public void handle(KeyEvent event) {
+//                   // Sentencia de control. Responde el movimiento al pulsar las teclas.
+//                    scene.setOnKeyPressed((KeyEvent) -> {
+//                        switch(event.getCode()){
+//                            case LEFT:
+//                                // Pulsa tecla izquierda.
+//                                carSpeed = -6;
+//                                break;
+//                            case RIGHT:
+//                                // Pulsa tecla derecha.
+//                                carSpeed = 6;
+//                                break;
+//                        }     
+//                    });
+//                };
+//            }; // Final Animation.
+//        
+//        
+//        animationCar.start();
+        }// Final Metodo Start.        
+    }// Fina Programa
 
