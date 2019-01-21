@@ -10,6 +10,7 @@
  */
 package com.tomasdguez.crazypolice;
 
+import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
@@ -70,10 +71,12 @@ public class Main extends Application {
     
     // Declaramos el metodo para dibujar las lineas de la pista/carretera.
     private void lineasPista(int portionHeight, int portionWidth, int portionSpacing){
-        for(int i=0; i<SCENES_TAM_Y; i+=portionSpacing){
-            Line line = new Line(SCENES_TAM_X/2, i, SCENES_TAM_X/2, i+portionHeight);
-            line.setStroke(Color.WHITE); // Color de la linea.
-            line.setStrokeWidth(portionWidth);
+//        for(int i=0; i<SCENES_TAM_Y; i+=portionSpacing){
+//            Line line = new Line(SCENES_TAM_X/2, i, SCENES_TAM_X/2, i+portionHeight);
+//            line.setStroke(Color.WHITE); // Color de la linea.
+//            line.setStrokeWidth(portionWidth);
+//            root.getChildren().add(line);
+//        }// Final bucler.
                                    //(inicioStartX, inicioStartY, InicioFinalX, InicioFinalY)
             Line lineLeft = new Line (SCENES_TAM_X/4, SCENES_TAM_Y, SCENES_TAM_X/4, SCENES_TAM_Y - 600);
             lineLeft.setStroke(Color.WHITE);
@@ -83,8 +86,13 @@ public class Main extends Application {
             lineRight.setStroke(Color.WHITE);
             lineRight.setStrokeWidth(portionWidth);
             
-            root.getChildren().addAll(line, lineLeft, lineRight);
-        }
+            Line lineCenter = new Line ((SCENES_TAM_X/4)+200, SCENES_TAM_Y, (SCENES_TAM_X/4)+200, SCENES_TAM_Y - 600);
+            lineCenter.setStroke(Color.WHITE);
+            lineCenter.setStrokeWidth(portionWidth);
+            lineCenter.setStrokeDashOffset(40.0); // Tamaño , Distancia .
+            
+            root.getChildren().addAll(lineLeft, lineRight, lineCenter);
+        
     }
 
     // Declaramos el metodo para dibujar el fondo negro de la pista.
@@ -222,30 +230,13 @@ public class Main extends Application {
         paneCurrentScores.getChildren().add(textTitleMaxScore);
         paneCurrentScores.getChildren().add(textMaxScore);
         
-        // Creamos la clase animación para el movimiento.
-        // Moviemiento del coche.
-//            AnimationTimer animationCar = new AnimationTimer() {
-//
-//
-//                public void handle(KeyEvent event) {
-//                   // Sentencia de control. Responde el movimiento al pulsar las teclas.
-//                    scene.setOnKeyPressed((KeyEvent) -> {
-//                        switch(event.getCode()){
-//                            case LEFT:
-//                                // Pulsa tecla izquierda.
-//                                carSpeed = -6;
-//                                break;
-//                            case RIGHT:
-//                                // Pulsa tecla derecha.
-//                                carSpeed = 6;
-//                                break;
-//                        }     
-//                    });
-//                };
-//            }; // Final Animation.
-//        
-//        
-//        animationCar.start();
-        }// Final Metodo Start.        
-    }// Fina Programa
+//        // Creamos la clase animación para el movimiento del fondo.
+//        AnimationTimer animacionFondo = null;
+//        animacionFondo = new AnimationTimer(){
+//            
+//        }
+                
+                
+    }// Final Metodo Start.        
+}// Fina Programa
 
