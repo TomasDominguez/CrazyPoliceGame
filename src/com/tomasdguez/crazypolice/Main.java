@@ -15,6 +15,8 @@ import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -37,6 +39,12 @@ public class Main extends Application {
     // Declaramos las variables de la posición del coche.
     int posCar_X = 0 ;
     int posCar_Y = 0 ;
+    
+    // Declaramos las variables para la posicon de la pantalla.
+    int posFondo_X = 200;
+    
+    int posFondo_Y = 0;
+    int posFondo_Y2 = 600;
     
     // Declaramos las variables para el coche.
     int CAR_WIDTH = 50;
@@ -86,12 +94,12 @@ public class Main extends Application {
             lineRight.setStroke(Color.WHITE);
             lineRight.setStrokeWidth(portionWidth);
             
-            Line lineCenter = new Line ((SCENES_TAM_X/4)+200, SCENES_TAM_Y, (SCENES_TAM_X/4)+200, SCENES_TAM_Y - 600);
-            lineCenter.setStroke(Color.WHITE);
-            lineCenter.setStrokeWidth(portionWidth);
-            lineCenter.setStrokeDashOffset(40.0); // Tamaño , Distancia .
+//            Line lineCenter = new Line ((SCENES_TAM_X/4)+200, SCENES_TAM_Y, (SCENES_TAM_X/4)+200, SCENES_TAM_Y - 600);
+//            lineCenter.setStroke(Color.WHITE);
+//            lineCenter.setStrokeWidth(portionWidth);
+//            lineCenter.setStrokeDashOffset(40.0); // Tamaño , Distancia .
             
-            root.getChildren().addAll(lineLeft, lineRight, lineCenter);
+            root.getChildren().addAll(lineLeft, lineRight);
         
     }
 
@@ -101,16 +109,15 @@ public class Main extends Application {
         pista.setStroke(Color.BLACK);
         root.getChildren().add(pista);
     }    
-//    // Declaramos el metodo para dibujar el fondo del marcador.
-//    private void barraSup(){
-//        Rectangle marcadorS = new Rectangle (0, 100, SCENES_TAM_X, SCENES_TAM_Y);
-//        marcadorS.setStroke(Color.DARKGRAY);
-//        Rectangle marcador = new Rectangle (0, 50, SCENES_TAM_X, SCENES_TAM_Y);
-//        marcador.setStroke(Color.WHITESMOKE);
-//        root.getChildren().addAll(marcadorS, marcador);
-//    }
     
-
+    // Declaramos el metodo para dibujar el fondo del marcador.
+    private void barraSup(){
+        Rectangle marcadorS = new Rectangle (0, 100, SCENES_TAM_X, SCENES_TAM_Y);
+        marcadorS.setStroke(Color.DARKGRAY);
+        Rectangle marcador = new Rectangle (0, 50, SCENES_TAM_X, SCENES_TAM_Y);
+        marcador.setStroke(Color.WHITESMOKE);
+        root.getChildren().addAll(marcadorS, marcador);
+    }
     
     // Declaramos el metodo para el resto de coches.
     private void cocheObj () {
@@ -150,35 +157,56 @@ public class Main extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
         
-        // Creamos las variables y objetos de tipo Rectangulo para el coche Player.
-        Rectangle rectCar = new Rectangle(posCar_X, posCar_Y, CAR_WIDTH, CAR_HEIGHT);
-        rectCar.setFill(Color.GREY);
+//        // Creamos las variables y objetos de tipo Rectangulo para el coche Player.
+//        Rectangle rectCar = new Rectangle(posCar_X, posCar_Y, CAR_WIDTH, CAR_HEIGHT);
+//        rectCar.setFill(Color.GREY);
+//        
+//        Rectangle rectCarSom = new Rectangle((posCar_X + 2.5), (posCar_Y + 2.5), (CAR_WIDTH - 5), (CAR_HEIGHT -5));
+//        rectCarSom.setFill(Color.WHITE);
+//        
+//        Rectangle techoCar = new Rectangle((posCar_X + 3), (posCar_Y + 20), (CAR_WIDTH - 6 ), (CAR_HEIGHT / 2));
+//        techoCar.setFill(Color.DARKBLUE);
+//        
+//        Rectangle luzIzqCar = new Rectangle((posCar_X +5), (posCar_Y + 35), ((CAR_WIDTH / 2) -6), ((CAR_HEIGHT / 4) / 2));
+//        luzIzqCar.setFill(Color.RED);
+//        
+//        Rectangle luzDerCar = new Rectangle((posCar_X + 25), (posCar_Y + 35), ((CAR_WIDTH / 2) - 6), ((CAR_HEIGHT / 4) / 2));
+//        luzDerCar.setFill(Color.LIGHTBLUE);
         
-        Rectangle rectCarSom = new Rectangle((posCar_X + 2.5), (posCar_Y + 2.5), (CAR_WIDTH - 5), (CAR_HEIGHT -5));
-        rectCarSom.setFill(Color.WHITE);
+        // Fondo de la pisa de carretera.
+        Image fondoImg = new Image("carretera.jpg");
+        Image fondoImg2 = new Image ("carretera2.jpg");
+        ImageView plano = new ImageView();
+        ImageView plano1 = new ImageView();
+        plano.setImage(fondoImg);
+        plano1.setImage(fondoImg2);
         
-        Rectangle techoCar = new Rectangle((posCar_X + 3), (posCar_Y + 20), (CAR_WIDTH - 6 ), (CAR_HEIGHT / 2));
-        techoCar.setFill(Color.DARKBLUE);
+        // Grupo para el fondo del juego.
+        Group pistaGroup = new Group();
+        pistaGroup.getChildren().add(plano);
+        pistaGroup.setLayoutX(posFondo_X);
+        pistaGroup.setLayoutY(posFondo_Y);
         
-        Rectangle luzIzqCar = new Rectangle((posCar_X +5), (posCar_Y + 35), ((CAR_WIDTH / 2) -6), ((CAR_HEIGHT / 4) / 2));
-        luzIzqCar.setFill(Color.RED);
+        // Grupo para el fondo 2 del juego.
+        Group pistaGroup2 = new Group();
+        pistaGroup2.getChildren().add(plano1);
+        pistaGroup2.setLayoutX(posFondo_X);
+        pistaGroup2.setLayoutY(posFondo_Y2);
         
-        Rectangle luzDerCar = new Rectangle((posCar_X + 25), (posCar_Y + 35), ((CAR_WIDTH / 2) - 6), ((CAR_HEIGHT / 4) / 2));
-        luzDerCar.setFill(Color.LIGHTBLUE);
+        root.getChildren().addAll(pistaGroup, pistaGroup2);
         
-        // Llamamos al metodo del marcador.
-        //barraSup();
-        
-        //Llamamos al metodo del fondo de la Pista.
-        fondoPista();
+        // LLamada al coche player animado.
+        Image policeCar = new Image("police-car.gif");
+        ImageView carPolice = new ImageView();
+        carPolice.setImage(policeCar);
         
         // Llamamos al metodo de las lineas discontinuas.
         lineasPista(20,6,40);
         
-        // LLamada Grupo PlayerCar.
+        // LLamada Grupo PlayerCar Police.
         Group player = new Group();
-        player.getChildren().addAll(rectCar, rectCarSom, techoCar, luzIzqCar, luzDerCar);
-        player.setTranslateX((SCENES_TAM_X/2) + 80);
+        player.getChildren().add(carPolice);
+        player.setTranslateX((SCENES_TAM_X/2) + 50);
         player.setTranslateY(SCENES_TAM_Y - 90);
         root.getChildren().add(player);
         
@@ -229,13 +257,30 @@ public class Main extends Application {
         paneCurrentScores.getChildren().add(textScore);
         paneCurrentScores.getChildren().add(textTitleMaxScore);
         paneCurrentScores.getChildren().add(textMaxScore);
+       
+        // Animación del fondo y movimiento del mismo.
+        AnimationTimer animacion = new AnimationTimer() {
+            
+            @Override
+            public void handle(long now) {
+               
+            // Cominezo Animación del fondo.
+               pistaGroup.setLayoutY(posFondo_Y);
+               pistaGroup2.setLayoutY(posFondo_Y2);
+               
+               posFondo_Y -= 2;
+               posFondo_Y2 -= 2;
+               
+                if (posFondo_Y == -600) {
+                    posFondo_Y = 600;
+                }
+                if (posFondo_Y2 == -600) {
+                    posFondo_Y2 = 600;
+                }
+            } // Final Handle
+        };
         
-//        // Creamos la clase animación para el movimiento del fondo.
-//        AnimationTimer animacionFondo = null;
-//        animacionFondo = new AnimationTimer(){
-//            
-//        }
-                
+        animacion.start();
                 
     }// Final Metodo Start.        
 }// Fina Programa
