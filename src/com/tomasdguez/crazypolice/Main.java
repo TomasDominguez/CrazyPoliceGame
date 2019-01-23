@@ -17,6 +17,7 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -37,14 +38,18 @@ public class Main extends Application {
     final int SCENES_TAM_Y = 600;
     
     // Declaramos las variables de la posición del coche.
-    int posCar_X = 0 ;
-    int posCar_Y = 0 ;
+    int posCar_X = (SCENES_TAM_X/2) + 50 ;
+    int posCar_Y = SCENES_TAM_Y - 90 ;
     
     // Declaramos las variables para la posicon de la pantalla.
     int posFondo_X = 200;
     
     int posFondo_Y = 0;
-    int posFondo_Y2 = 600;
+    int posFondo_Y2 = -600;
+    
+    // Declaramos las variables para las lineas de colision.
+    int lineaDer = SCENES_TAM_X + 200;
+    int lineaIzq = SCENES_TAM_X + 600;
     
     // Declaramos las variables para el coche.
     int CAR_WIDTH = 50;
@@ -57,7 +62,7 @@ public class Main extends Application {
     int score = 0;
     
     // Declaramos la variable para la máxima puntuación.
-    int highScore;
+    int highScore = 0;
     
     // Declaramos la variable para la velocidad del coche.
     int carSpeed = 0 ;
@@ -175,11 +180,10 @@ public class Main extends Application {
         
         // Fondo de la pisa de carretera.
         Image fondoImg = new Image("carretera.jpg");
-        Image fondoImg2 = new Image ("carretera2.jpg");
         ImageView plano = new ImageView();
         ImageView plano1 = new ImageView();
         plano.setImage(fondoImg);
-        plano1.setImage(fondoImg2);
+        plano1.setImage(fondoImg);
         
         // Grupo para el fondo del juego.
         Group pistaGroup = new Group();
@@ -193,21 +197,22 @@ public class Main extends Application {
         pistaGroup2.setLayoutX(posFondo_X);
         pistaGroup2.setLayoutY(posFondo_Y2);
         
+        // Muestra de las dos image del fondo
         root.getChildren().addAll(pistaGroup, pistaGroup2);
+        
+        // Llamamos al metodo de las lineas.
+        lineasPista(20,6,40);
         
         // LLamada al coche player animado.
         Image policeCar = new Image("police-car.gif");
         ImageView carPolice = new ImageView();
         carPolice.setImage(policeCar);
         
-        // Llamamos al metodo de las lineas discontinuas.
-        lineasPista(20,6,40);
-        
         // LLamada Grupo PlayerCar Police.
         Group player = new Group();
         player.getChildren().add(carPolice);
-        player.setTranslateX((SCENES_TAM_X/2) + 50);
-        player.setTranslateY(SCENES_TAM_Y - 90);
+        player.setTranslateX(posCar_X);
+        player.setTranslateY(posCar_Y);
         root.getChildren().add(player);
         
         // Llamada al metodo coche objeto.
@@ -260,7 +265,9 @@ public class Main extends Application {
        
         // Animación del fondo y movimiento del mismo.
         AnimationTimer animacion = new AnimationTimer() {
-            
+        
+        // Metodo para la animación del player y detectar las pulsaciones.
+       
             @Override
             public void handle(long now) {
                
@@ -268,15 +275,40 @@ public class Main extends Application {
                pistaGroup.setLayoutY(posFondo_Y);
                pistaGroup2.setLayoutY(posFondo_Y2);
                
-               posFondo_Y -= 2;
-               posFondo_Y2 -= 2;
+               posFondo_Y += 2;
+               posFondo_Y2 += 2;
                
-                if (posFondo_Y == -600) {
-                    posFondo_Y = 600;
+                if (posFondo_Y == 600) {
+                    posFondo_Y = -600;
                 }
-                if (posFondo_Y2 == -600) {
-                    posFondo_Y2 = 600;
+                if (posFondo_Y2 == 600) {
+                    posFondo_Y2 = -600;
                 }
+            
+            // Animación del player.
+            player.setLayoutX(posCar_X);
+            player.setLayoutY(posCar_Y);
+            
+            posCar_X += carSpeed;
+            if(posCar_X < 0){
+                posCar_X = 0;
+            } else {
+                if (posCar_X > lineaDer - ){
+                    posCar_X = lineaDer - ;
+                }
+            }
+            scene.setOnKeyPressed((KeyEvent event) -> {
+                switch(event.getCode()){
+                    case LEFT:
+                           //Pulsa tecla izquierda.
+                        carSpeed = -6;
+                        break;
+                    case RIGHT:
+                        //Pulsa tecla derecha.
+                        carSpeed = 6;
+                        break;
+                }
+            });
             } // Final Handle
         };
         
