@@ -42,14 +42,13 @@ public class Main extends Application {
     int posCar_Y = SCENES_TAM_Y - 90 ;
     
     // Declaramos las variables para la posicon de la pantalla.
-    int posFondo_X = 200;
-    
+    int posFondo_X = 200; 
     int posFondo_Y = 0;
     int posFondo_Y2 = -600;
     
     // Declaramos las variables para las lineas de colision.
-    int lineaDer = SCENES_TAM_X + 200;
-    int lineaIzq = SCENES_TAM_X + 600;
+    int lineaDer = SCENES_TAM_X + 600;
+    int lineaIzq = SCENES_TAM_X + 200;
     
     // Declaramos las variables para el coche.
     int CAR_WIDTH = 50;
@@ -65,7 +64,7 @@ public class Main extends Application {
     int highScore = 0;
     
     // Declaramos la variable para la velocidad del coche.
-    int carSpeed = 0 ;
+    int carSpeed;
     
     // Declaramos la variable textScore para el uso del boton "Start" y "ResetGame".
     Text textScore;
@@ -76,6 +75,10 @@ public class Main extends Application {
     // Declaramos la variable root con Pane.
     Pane root;
     
+    // Declaramos los gropos de los metodos.
+    Group pistaFondo1 = new Group();
+    Group pistaFondo2 = new Group();
+    
     // Declaramos el metodo para el reinicio del juego.
     private void resetGame(){
     score = 0;
@@ -84,12 +87,6 @@ public class Main extends Application {
     
     // Declaramos el metodo para dibujar las lineas de la pista/carretera.
     private void lineasPista(int portionHeight, int portionWidth, int portionSpacing){
-//        for(int i=0; i<SCENES_TAM_Y; i+=portionSpacing){
-//            Line line = new Line(SCENES_TAM_X/2, i, SCENES_TAM_X/2, i+portionHeight);
-//            line.setStroke(Color.WHITE); // Color de la linea.
-//            line.setStrokeWidth(portionWidth);
-//            root.getChildren().add(line);
-//        }// Final bucler.
                                    //(inicioStartX, inicioStartY, InicioFinalX, InicioFinalY)
             Line lineLeft = new Line (SCENES_TAM_X/4, SCENES_TAM_Y, SCENES_TAM_X/4, SCENES_TAM_Y - 600);
             lineLeft.setStroke(Color.WHITE);
@@ -98,30 +95,41 @@ public class Main extends Application {
             Line lineRight = new Line ((SCENES_TAM_X/4)+400, SCENES_TAM_Y, (SCENES_TAM_X/4)+400, SCENES_TAM_Y - 600);
             lineRight.setStroke(Color.WHITE);
             lineRight.setStrokeWidth(portionWidth);
-            
-//            Line lineCenter = new Line ((SCENES_TAM_X/4)+200, SCENES_TAM_Y, (SCENES_TAM_X/4)+200, SCENES_TAM_Y - 600);
-//            lineCenter.setStroke(Color.WHITE);
-//            lineCenter.setStrokeWidth(portionWidth);
-//            lineCenter.setStrokeDashOffset(40.0); // Tamaño , Distancia .
-            
+                        
             root.getChildren().addAll(lineLeft, lineRight);
-        
     }
 
     // Declaramos el metodo para dibujar el fondo negro de la pista.
-    private void fondoPista() {
-        Rectangle pista = new Rectangle(200, 0, SCENES_TAM_X/2, SCENES_TAM_Y);
-        pista.setStroke(Color.BLACK);
-        root.getChildren().add(pista);
-    }    
+    private void fondo1() {
+        // Fondo de la pisa de carretera.
+        Image fondoImg = new Image("carretera.jpg");
+        ImageView plano = new ImageView();
+        plano.setImage(fondoImg);
+        
+        // Grupo para el fondo del juego.
+        Group pistaGroup = new Group();
+        pistaGroup.getChildren().add(plano);
+        pistaGroup.setLayoutX(posFondo_X);
+        pistaGroup.setLayoutY(posFondo_Y);
+        
+        // Muestra de la image del fondo
+       pistaFondo1.getChildren().add(pistaGroup);
+    }
     
-    // Declaramos el metodo para dibujar el fondo del marcador.
-    private void barraSup(){
-        Rectangle marcadorS = new Rectangle (0, 100, SCENES_TAM_X, SCENES_TAM_Y);
-        marcadorS.setStroke(Color.DARKGRAY);
-        Rectangle marcador = new Rectangle (0, 50, SCENES_TAM_X, SCENES_TAM_Y);
-        marcador.setStroke(Color.WHITESMOKE);
-        root.getChildren().addAll(marcadorS, marcador);
+    private void fondo2() {
+        // Fondo de la pisa de carretera.
+        Image fondoImg = new Image("carretera.jpg");
+        ImageView plano1 = new ImageView();
+        plano1.setImage(fondoImg);
+        
+        // Grupo para el fondo 2 del juego.
+        Group pistaGroup2 = new Group();
+        pistaGroup2.getChildren().add(plano1);
+        pistaGroup2.setLayoutX(posFondo_X);
+        pistaGroup2.setLayoutY(posFondo_Y2);
+        
+        // Muestra de la image del fondo
+        pistaFondo2.getChildren().add(pistaGroup2);
     }
     
     // Declaramos el metodo para el resto de coches.
@@ -151,58 +159,8 @@ public class Main extends Application {
         
     }
     
-    @Override
-    public void start(Stage primaryStage) {
-        
-        // Declaramos dimensiones y color de fondo de la pantalla del juego.
-        root = new Pane();
-        Scene scene = new Scene(root, SCENES_TAM_X, SCENES_TAM_Y, Color.GREEN); //Color de Fondo.
-        primaryStage.setTitle("Crazy Police");
-        //primaryStage.getIcons().add(new Image ("fileName.png")) // Icono Aplicación.
-        primaryStage.setScene(scene);
-        primaryStage.show();
-        
-//        // Creamos las variables y objetos de tipo Rectangulo para el coche Player.
-//        Rectangle rectCar = new Rectangle(posCar_X, posCar_Y, CAR_WIDTH, CAR_HEIGHT);
-//        rectCar.setFill(Color.GREY);
-//        
-//        Rectangle rectCarSom = new Rectangle((posCar_X + 2.5), (posCar_Y + 2.5), (CAR_WIDTH - 5), (CAR_HEIGHT -5));
-//        rectCarSom.setFill(Color.WHITE);
-//        
-//        Rectangle techoCar = new Rectangle((posCar_X + 3), (posCar_Y + 20), (CAR_WIDTH - 6 ), (CAR_HEIGHT / 2));
-//        techoCar.setFill(Color.DARKBLUE);
-//        
-//        Rectangle luzIzqCar = new Rectangle((posCar_X +5), (posCar_Y + 35), ((CAR_WIDTH / 2) -6), ((CAR_HEIGHT / 4) / 2));
-//        luzIzqCar.setFill(Color.RED);
-//        
-//        Rectangle luzDerCar = new Rectangle((posCar_X + 25), (posCar_Y + 35), ((CAR_WIDTH / 2) - 6), ((CAR_HEIGHT / 4) / 2));
-//        luzDerCar.setFill(Color.LIGHTBLUE);
-        
-        // Fondo de la pisa de carretera.
-        Image fondoImg = new Image("carretera.jpg");
-        ImageView plano = new ImageView();
-        ImageView plano1 = new ImageView();
-        plano.setImage(fondoImg);
-        plano1.setImage(fondoImg);
-        
-        // Grupo para el fondo del juego.
-        Group pistaGroup = new Group();
-        pistaGroup.getChildren().add(plano);
-        pistaGroup.setLayoutX(posFondo_X);
-        pistaGroup.setLayoutY(posFondo_Y);
-        
-        // Grupo para el fondo 2 del juego.
-        Group pistaGroup2 = new Group();
-        pistaGroup2.getChildren().add(plano1);
-        pistaGroup2.setLayoutX(posFondo_X);
-        pistaGroup2.setLayoutY(posFondo_Y2);
-        
-        // Muestra de las dos image del fondo
-        root.getChildren().addAll(pistaGroup, pistaGroup2);
-        
-        // Llamamos al metodo de las lineas.
-        lineasPista(20,6,40);
-        
+    // Declaramos el metodo para el jugador.
+    private void jugador () {
         // LLamada al coche player animado.
         Image policeCar = new Image("police-car.gif");
         ImageView carPolice = new ImageView();
@@ -214,9 +172,29 @@ public class Main extends Application {
         player.setTranslateX(posCar_X);
         player.setTranslateY(posCar_Y);
         root.getChildren().add(player);
+    }
+    
+    
+    @Override
+    public void start(Stage primaryStage) {
         
-        // Llamada al metodo coche objeto.
-        //cocheObj();
+        // Declaramos dimensiones y color de fondo de la pantalla del juego.
+        root = new Pane();
+        Scene scene = new Scene(root, SCENES_TAM_X, SCENES_TAM_Y, Color.GREEN); //Color de Fondo.
+        primaryStage.setTitle("Crazy Police");
+        //primaryStage.getIcons().add(new Image ("fileName.png")) // Icono Aplicación.
+        primaryStage.setScene(scene);
+        primaryStage.show();
+        
+        // Llmada al fondo.
+        fondo1();
+        fondo2();
+        
+        // Llamamos al metodo de las lineas.
+        lineasPista(20,6,40);
+          
+        // LLamaos al jugador.
+        jugador();
         
         // Creamos los marcadores de máxima puntuación y la puntuación de partida.
         // Creamos el primer LAYOUTS.
@@ -263,56 +241,67 @@ public class Main extends Application {
         paneCurrentScores.getChildren().add(textTitleMaxScore);
         paneCurrentScores.getChildren().add(textMaxScore);
        
-        // Animación del fondo y movimiento del mismo.
-        AnimationTimer animacion = new AnimationTimer() {
-        
-        // Metodo para la animación del player y detectar las pulsaciones.
-       
-            @Override
-            public void handle(long now) {
-               
-            // Cominezo Animación del fondo.
-               pistaGroup.setLayoutY(posFondo_Y);
-               pistaGroup2.setLayoutY(posFondo_Y2);
-               
-               posFondo_Y += 2;
-               posFondo_Y2 += 2;
-               
-                if (posFondo_Y == 600) {
-                    posFondo_Y = -600;
-                }
-                if (posFondo_Y2 == 600) {
-                    posFondo_Y2 = -600;
-                }
-            
-            // Animación del player.
-            player.setLayoutX(posCar_X);
-            player.setLayoutY(posCar_Y);
-            
-            posCar_X += carSpeed;
-            if(posCar_X < 0){
-                posCar_X = 0;
-            } else {
-                if (posCar_X > lineaDer - ){
-                    posCar_X = lineaDer - ;
-                }
-            }
-            scene.setOnKeyPressed((KeyEvent event) -> {
-                switch(event.getCode()){
-                    case LEFT:
-                           //Pulsa tecla izquierda.
-                        carSpeed = -6;
-                        break;
-                    case RIGHT:
-                        //Pulsa tecla derecha.
-                        carSpeed = 6;
-                        break;
-                }
-            });
-            } // Final Handle
-        };
-        
-        animacion.start();
+//        // Animación del fondo y movimiento del mismo.
+//        AnimationTimer animacion;
+//        animacion = new AnimationTimer() {
+//            
+//        @Override
+//        public void handle(long now) {
+//                
+//                // Cominezo Animación del fondo.
+//                pistaFondo1.setLayoutY(posFondo_Y);
+//                pistaFondo2.setLayoutY(posFondo_Y2);
+//                
+//                posFondo_Y += 2;
+//                posFondo_Y2 += 2;
+//                
+//                if (posFondo_Y == 600) {
+//                    posFondo_Y = -600;
+//                }
+//                if (posFondo_Y2 == 600) {
+//                    posFondo_Y2 = -600;
+//                }
+//                
+//                //Animación del player.
+//                //player.setLayoutX(posCar_X);
+//                //player.setLayoutY(posCar_Y);
+//                posCar_X += carSpeed;
+//                
+//                
+//                
+////                posCar_X += carSpeed;
+////                if(posCar_X < 0){
+////                    posCar_X = 0;
+////                } else {
+////                    if (posCar_X > lineaDer - player ){
+////                        posCar_X = lineaDer - player ;
+////                    }
+////                }
+////                player.setLayoutX(posCar_X);
+//              
+//                
+//            } // Final Handle
+//        };
+//        
+//        scene.setOnKeyPressed((KeyEvent event) -> {
+//            switch(event.getCode()){
+//                case LEFT:
+//                    //Pulsa tecla izquierda.
+//                    carSpeed = -6;
+//                    break;
+//                case RIGHT:
+//                    //Pulsa tecla derecha.
+//                    carSpeed = 6;
+//                    break;
+//                }
+//            });
+//        scene.setOnKeyReleased((KeyEvent event) -> {
+//            // Velocidad 0 al no pulsar tecla
+//            carSpeed = 0;
+//        });
+//        
+//        // Cominezo de la animación.
+//        animacion.start();
                 
     }// Final Metodo Start.        
 }// Fina Programa
