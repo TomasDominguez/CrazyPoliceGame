@@ -75,9 +75,12 @@ public class Main extends Application {
     // Declaramos la variable root con Pane.
     Pane root;
     
-    // Declaramos los gropos de los metodos.
+    // Declaramos los grupos de los metodos para la animación.
     Group pistaFondo1 = new Group();
     Group pistaFondo2 = new Group();
+    
+    // Declaramos el grupo para el jugador.
+    Group player = new Group();
     
     // Declaramos el metodo para el reinicio del juego.
     private void resetGame(){
@@ -107,15 +110,15 @@ public class Main extends Application {
         plano.setImage(fondoImg);
         
         // Grupo para el fondo del juego.
-        Group pistaGroup = new Group();
-        pistaGroup.getChildren().add(plano);
-        pistaGroup.setLayoutX(posFondo_X);
-        pistaGroup.setLayoutY(posFondo_Y);
+        pistaFondo1.getChildren().add(plano);
+        pistaFondo1.setLayoutX(posFondo_X);
+        pistaFondo1.setLayoutY(posFondo_Y);
         
         // Muestra de la image del fondo
-       pistaFondo1.getChildren().add(pistaGroup);
+        root.getChildren().add(pistaFondo1);
     }
     
+    // Declaramos el método para la imagen 2 del fondo.
     private void fondo2() {
         // Fondo de la pisa de carretera.
         Image fondoImg = new Image("carretera.jpg");
@@ -123,13 +126,12 @@ public class Main extends Application {
         plano1.setImage(fondoImg);
         
         // Grupo para el fondo 2 del juego.
-        Group pistaGroup2 = new Group();
-        pistaGroup2.getChildren().add(plano1);
-        pistaGroup2.setLayoutX(posFondo_X);
-        pistaGroup2.setLayoutY(posFondo_Y2);
+        pistaFondo2.getChildren().add(plano1);
+        pistaFondo2.setLayoutX(posFondo_X);
+        pistaFondo2.setLayoutY(posFondo_Y2);
         
         // Muestra de la image del fondo
-        pistaFondo2.getChildren().add(pistaGroup2);
+        root.getChildren().add(pistaFondo2);
     }
     
     // Declaramos el metodo para el resto de coches.
@@ -155,7 +157,19 @@ public class Main extends Application {
     
     // Declaramos el metodo para dibujar el obstaculo.
     private void piedra () {
-    
+        // Obstaculo de piedra para el juego.
+        Image obsA = new Image("a.png");
+        ImageView obstaculoA = new ImageView();
+        obstaculoA.setImage(obsA);
+        
+        // Grupo para el fondo 2 del juego.
+        Group piedraGroup = new Group();
+        piedraGroup.getChildren().add(obstaculoA);
+        piedraGroup.setLayoutX(posFondo_X);
+        piedraGroup.setLayoutY(posFondo_Y2);
+        
+        // Muestra de la image del fondo
+        root.getChildren().add(piedraGroup);
         
     }
     
@@ -167,7 +181,6 @@ public class Main extends Application {
         carPolice.setImage(policeCar);
         
         // LLamada Grupo PlayerCar Police.
-        Group player = new Group();
         player.getChildren().add(carPolice);
         player.setTranslateX(posCar_X);
         player.setTranslateY(posCar_Y);
@@ -186,9 +199,12 @@ public class Main extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
         
-        // Llmada al fondo.
+        // Llamada al fondo.
         fondo1();
         fondo2();
+        
+        // LLamada a la piedra de objeto
+        piedra();
         
         // Llamamos al metodo de las lineas.
         lineasPista(20,6,40);
@@ -241,68 +257,67 @@ public class Main extends Application {
         paneCurrentScores.getChildren().add(textTitleMaxScore);
         paneCurrentScores.getChildren().add(textMaxScore);
        
-//        // Animación del fondo y movimiento del mismo.
-//        AnimationTimer animacion;
-//        animacion = new AnimationTimer() {
-//            
-//        @Override
-//        public void handle(long now) {
-//                
-//                // Cominezo Animación del fondo.
-//                pistaFondo1.setLayoutY(posFondo_Y);
-//                pistaFondo2.setLayoutY(posFondo_Y2);
-//                
-//                posFondo_Y += 2;
-//                posFondo_Y2 += 2;
-//                
-//                if (posFondo_Y == 600) {
-//                    posFondo_Y = -600;
-//                }
-//                if (posFondo_Y2 == 600) {
-//                    posFondo_Y2 = -600;
-//                }
-//                
-//                //Animación del player.
-//                //player.setLayoutX(posCar_X);
-//                //player.setLayoutY(posCar_Y);
-//                posCar_X += carSpeed;
-//                
-//                
-//                
-////                posCar_X += carSpeed;
-////                if(posCar_X < 0){
-////                    posCar_X = 0;
-////                } else {
-////                    if (posCar_X > lineaDer - player ){
-////                        posCar_X = lineaDer - player ;
-////                    }
-////                }
-////                player.setLayoutX(posCar_X);
-//              
-//                
-//            } // Final Handle
-//        };
-//        
-//        scene.setOnKeyPressed((KeyEvent event) -> {
-//            switch(event.getCode()){
-//                case LEFT:
-//                    //Pulsa tecla izquierda.
-//                    carSpeed = -6;
-//                    break;
-//                case RIGHT:
-//                    //Pulsa tecla derecha.
-//                    carSpeed = 6;
-//                    break;
-//                }
-//            });
-//        scene.setOnKeyReleased((KeyEvent event) -> {
-//            // Velocidad 0 al no pulsar tecla
-//            carSpeed = 0;
-//        });
-//        
-//        // Cominezo de la animación.
-//        animacion.start();
+        // Animación del fondo y movimiento del mismo.
+        AnimationTimer animacion;
+        animacion = new AnimationTimer() {
+            
+        @Override
+        public void handle(long now) {
+                
+                // Cominezo Animación del fondo.
+                pistaFondo1.setLayoutY(posFondo_Y);
+                pistaFondo2.setLayoutY(posFondo_Y2);
+                
+                posFondo_Y += 2;
+                posFondo_Y2 += 2;
+                
+                if (posFondo_Y == 600) {
+                    posFondo_Y = -600;
+                }
+                if (posFondo_Y2 == 600) {
+                    posFondo_Y2 = -600;
+                }
+
+                //Animación del player.
+                player.setLayoutX(posCar_X);
+                player.setLayoutY(posCar_Y);
+                posCar_X += carSpeed;
+                
+                
+                
+                posCar_X += carSpeed;
+                if(posCar_X < 0){
+                    posCar_X = 0;
+                } else {
+                    if (posCar_X > lineaDer - player ){
+                        posCar_X = lineaDer - player ;
+                    }
+                }
+                player.setLayoutX(posCar_X);
+              
+                
+            } // Final Handle
+        };
+        
+        scene.setOnKeyPressed((KeyEvent event) -> {
+            switch(event.getCode()){
+                case LEFT:
+                    //Pulsa tecla izquierda.
+                    carSpeed = -6;
+                    break;
+                case RIGHT:
+                    //Pulsa tecla derecha.
+                    carSpeed = 6;
+                    break;
+                }
+            });
+        scene.setOnKeyReleased((KeyEvent event) -> {
+            // Velocidad 0 al no pulsar tecla
+            carSpeed = 0;
+        });
+        
+        // Cominezo de la animación.
+        animacion.start();
                 
     }// Final Metodo Start.        
 }// Fina Programa
-
