@@ -46,6 +46,10 @@ public class Main extends Application {
     int posFondo_Y = 0;
     int posFondo_Y2 = -600;
     
+    // Declaración de variables  para la posición de las piedras.
+    int posFondoX_rok = 300;
+    int posFondoY_rok = 300;
+    
     // Declaramos las variables para las lineas de colision.
     int lineaDer = SCENES_TAM_X + 600;
     int lineaIzq = SCENES_TAM_X + 200;
@@ -53,6 +57,10 @@ public class Main extends Application {
     // Declaramos las variables para el coche.
     int CAR_WIDTH = 50;
     int CAR_HEIGHT = 80;
+    
+    // Declaramos la variable para la velocidad del coche.
+    int carSpeed;
+    int movCar;
     
     // Declaramos la variable para el texto.
     int TEXT_SIZE = 20;
@@ -62,9 +70,6 @@ public class Main extends Application {
     
     // Declaramos la variable para la máxima puntuación.
     int highScore = 0;
-    
-    // Declaramos la variable para la velocidad del coche.
-    int carSpeed;
     
     // Declaramos la variable textScore para el uso del boton "Start" y "ResetGame".
     Text textScore;
@@ -78,6 +83,10 @@ public class Main extends Application {
     // Declaramos los grupos de los metodos para la animación.
     Group pistaFondo1 = new Group();
     Group pistaFondo2 = new Group();
+    
+    // Declaramos el grupo para la piedra de colision.
+    Group piedraGroup = new Group();
+    Group piedraGroup1 = new Group();
     
     // Declaramos el grupo para el jugador.
     Group player = new Group();
@@ -158,19 +167,30 @@ public class Main extends Application {
     // Declaramos el metodo para dibujar el obstaculo.
     private void piedra () {
         // Obstaculo de piedra para el juego.
-        Image obsA = new Image("a.png");
+        Image obsA = new Image("a.png", 50, 50, false, false);
         ImageView obstaculoA = new ImageView();
         obstaculoA.setImage(obsA);
         
         // Grupo para el fondo 2 del juego.
-        Group piedraGroup = new Group();
         piedraGroup.getChildren().add(obstaculoA);
         piedraGroup.setLayoutX(posFondo_X);
         piedraGroup.setLayoutY(posFondo_Y2);
-        
         // Muestra de la image del fondo
         root.getChildren().add(piedraGroup);
+    }
+    
+    private void piedra1 () {
+        // Obstaculo de piedra para el juego.
+        Image obsA = new Image("c.png", 50, 50, false, false);
+        ImageView obstaculoA = new ImageView();
+        obstaculoA.setImage(obsA);
         
+        // Grupo para el fondo 2 del juego.
+        piedraGroup1.getChildren().add(obstaculoA);
+        piedraGroup1.setLayoutX(posFondo_X);
+        piedraGroup1.setLayoutY(posFondo_Y2);
+        // Muestra de la image del fondo
+        root.getChildren().add(piedraGroup1);
     }
     
     // Declaramos el metodo para el jugador.
@@ -202,15 +222,16 @@ public class Main extends Application {
         // Llamada al fondo.
         fondo1();
         fondo2();
-        
-        // LLamada a la piedra de objeto
-        piedra();
-        
+              
         // Llamamos al metodo de las lineas.
         lineasPista(20,6,40);
           
         // LLamaos al jugador.
         jugador();
+        
+        // LLamada a la piedra de objeto
+        piedra();
+        piedra1();
         
         // Creamos los marcadores de máxima puntuación y la puntuación de partida.
         // Creamos el primer LAYOUTS.
@@ -277,6 +298,14 @@ public class Main extends Application {
                 if (posFondo_Y2 == 600) {
                     posFondo_Y2 = -600;
                 }
+                
+                // Animación para obstaculos.
+                piedraGroup.setLayoutY(posFondo_Y);
+                piedraGroup.setLayoutX(posFondo_X);
+                
+                piedraGroup1.setLayoutY(posFondo_Y);
+                piedraGroup1.setLayoutX(posFondo_X*2);
+                
 
                 //Animación del player.
                 player.setLayoutX(posCar_X);
@@ -289,13 +318,12 @@ public class Main extends Application {
                 if(posCar_X < 0){
                     posCar_X = 0;
                 } else {
-                    if (posCar_X > lineaDer - player ){
-                        posCar_X = lineaDer - player ;
+                    if (posCar_X > lineaDer - movCar ){
+                        posCar_X = lineaDer - movCar ;
                     }
                 }
                 player.setLayoutX(posCar_X);
-              
-                
+ 
             } // Final Handle
         };
         
