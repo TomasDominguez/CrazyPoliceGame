@@ -10,6 +10,7 @@
  */
 package com.tomasdguez.crazypolice;
 
+import static java.awt.SystemColor.text;
 import java.util.Random;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
@@ -41,16 +42,18 @@ public class Main extends Application {
     int alturaVentana = 600;
     int anchuraVentana = 600;
     
-    int lineaDer = anchuraVentana + 600;
-    int lineaIzq = anchuraVentana + 200;
+    int lineaDer = anchuraVentana - 600;
+    int lineaIzq = anchuraVentana - 200;
+    int limitDer = -230;
+    int limitIzq = 130;
     
     double velObsActual = 3;
     double dificultad = 0.7;
     double velObsX = 3;
     double velObsY = 3;
     
-    double posObsX = lineaDer/2;
-    double posObsY = alturaVentana/2;
+    double posObsX;
+    double posObsY;
     
     int velCoche = 0;
     int posCocheX = anchuraVentana/2;
@@ -62,11 +65,11 @@ public class Main extends Application {
     int posFondoX = 100;
     int posFondoY = 0;
     int posFondoY_2 = -600;
+    int posFondoX_Ran = posCocheX/2;
+    int posFondoY_Ran = posCocheY;
     
-    int puntos = 0;
-    
-    int portionWidth;
-    int loadJugador;
+    int puntos;
+    int maxPuntos;
     
     Group pistaFondo1 = new Group();
     Group pistaFondo2 = new Group();
@@ -74,14 +77,17 @@ public class Main extends Application {
     Group obstA = new Group();
     Group obstB = new Group();
     
+    Text texto;
+    Text textoMax;
     
-    
-    public void punto(){
-        velObsActual = 3;
-        velObsX = 3;
-        velObsY = 3;
-        posObsX = lineaDer/2;
-        posObsY = alturaVentana/2;
+    // Metodo de reinicio.
+    public void reinicio() {
+       puntos = 0;
+       texto.setText(String.valueOf(puntos));
+       
+       Random random = new Random();
+       posObsX = random.nextInt(posFondoX_Ran);
+       posObsY = random.nextInt(posFondoY_Ran);
     }
     
     @Override
@@ -123,8 +129,8 @@ public class Main extends Application {
         
         // Añadiendo al grupo la imagen y el poligono además de darle las posiciones.
         obstA.getChildren().addAll(obstaculoA, polObs);
-        obstA.setLayoutX(posFondoX);
-        obstA.setLayoutY(posFondoY);
+        obstA.setLayoutX(posFondoX_Ran);
+        obstA.setLayoutY(posFondoY_Ran);
         
         // Segundo Obstaculo del juego..
         Image obsB = new Image("b.png", 50, 50, false, false);
@@ -133,12 +139,12 @@ public class Main extends Application {
         
         Circle polObs2 = new Circle(25, 20, 25);
         polObs2.setFill(javafx.scene.paint.Color.RED);
-        polObs.setOpacity(0.0);
+        polObs2.setOpacity(0.0);
         
         // Añadiendo al grupo la imagen y el poligono además de darle las posiciones.
         obstB.getChildren().addAll(obstaculoB, polObs2);
-        obstB.setLayoutX(posFondoX*2);
-        obstB.setLayoutY(posFondoY*2);
+        obstB.setLayoutX(posFondoX_Ran/2);
+        obstB.setLayoutY(posFondoY_Ran/3);
         
         // Declaramos las lineas laterales de la carretera.
         Line lineLeft = new Line (anchuraVentana/6, alturaVentana, anchuraVentana/6, alturaVentana - 600);
@@ -146,14 +152,6 @@ public class Main extends Application {
          
         Line lineRight = new Line ((anchuraVentana/4)+350, alturaVentana, (anchuraVentana/4)+350, alturaVentana - 600);
         lineRight.setStroke(Color.WHITE);
-        
-        // Marcadores de Puntuación.
-        Text texto = new Text();
-        texto.setText("Puntuación:  "+"0");
-        texto.setTranslateX(alturaVentana/4);
-        texto.setTranslateY(anchuraVentana-580);
-        texto.setWrappingWidth(200);
-        texto.setFill(Color.WHITE);
         
         // Coche del Jugador
         Image cocheJugador = new Image("police-car.gif");
@@ -169,17 +167,36 @@ public class Main extends Application {
         player.getChildren().addAll(jugador, rCoche);
         player.setTranslateX(posCocheX);
         player.setTranslateY(posCocheY);
+        
+        // Marcadores de Puntuación.
+        texto = new Text();
+        texto.setText("Puntos:  " + puntos);
+        texto.setTranslateX(alturaVentana-595);
+        texto.setTranslateY(anchuraVentana-580);
+        texto.setWrappingWidth(200);
+        texto.setFill(Color.WHITE);
+        
+        textoMax = new Text();
+        textoMax.setText("Puntos Mx: "+ maxPuntos);
+        textoMax.setTranslateX(alturaVentana-595);
+        textoMax.setTranslateY(anchuraVentana-550);
+        textoMax.setWrappingWidth(200);
+        textoMax.setFill(Color.WHITE);
             
         // Muestra de imagenes de los grupos                
-        root.getChildren().addAll( pistaFondo1, pistaFondo2, lineLeft, lineRight, texto, obstB, obstA, player);
+        root.getChildren().addAll( pistaFondo1, pistaFondo2, lineLeft, lineRight, texto, textoMax, obstB, obstA, player);
+        
+        // Llamada al metodo de reinicio.
+        reinicio();
         
         // Cominezo de la animación.
         AnimationTimer animation = new AnimationTimer(){
             @Override
             public void handle(long now) {
                 //Movimiento Obstaculos
-                obstA.setLayoutY(posFondoY);
-                obstB.setLayoutY(posFondoY_2);
+                obstA.setLayoutY(posObsY);
+                obstB.setLayoutY(posObsY);
+                posObsY += 2;
                 
                 // Pruena Movimiento Fondo.
                 pistaFondo1.setLayoutY(posFondoY);
@@ -197,13 +214,12 @@ public class Main extends Application {
                 //System.out.println("Pos Fondo 1: " + posFondoY + " Pos Fondo 2: "+ posFondoY_2);
                 
                 // Movimiento del coche.
-                
                 posCocheX += velCoche;
-                if(posCocheX < -230){
-                    posCocheX = -230;
+                if(posCocheX < limitDer){
+                    posCocheX = limitDer;
                 } else {
-                    if (posCocheX > 130) {
-                        posCocheX = 130;
+                    if (posCocheX > limitIzq) {
+                        posCocheX = limitIzq;
                     }
                 }
                 player.setLayoutX(posCocheX);
@@ -211,19 +227,44 @@ public class Main extends Application {
                 
                 // Colisión del obtjeto con el coche.
                 Shape colisionObj = Shape.intersect(rCoche, polObs);
+                Shape colisionObj2 = Shape.intersect(rCoche, polObs2);
                 boolean colisionObjVacia = colisionObj.getBoundsInLocal().isEmpty();
+                boolean colisionObjVacia2 = colisionObj2.getBoundsInLocal().isEmpty();
                 
                 if (colisionObjVacia == false) {
                     System.out.println("Hay Colision");
                     
+                    // Reiniciamos el juego al colisionar.
+                    reinicio();
+                    // Almacenamiento de Maxima Puntuación.
+                    maxPuntos = puntos;
+                    textoMax.setText(String.valueOf(maxPuntos));
+                } else {
+                    //puntos.
+                    if (colisionObjVacia == true) {
+                        puntos ++;
+                        texto.setText(String.valueOf(puntos));
+                    } 
                 }
-                Shape colisionObj2 = Shape.intersect(rCoche, polObs2);
-                boolean colisionObjVacia2 = colisionObj2.getBoundsInLocal().isEmpty();
                 
                 if (colisionObjVacia2 == false) {
-                    System.out.println("Hay Colision Segundo Objeto");
+                    System.out.println("Hay Colision");
+                    
+                    // Reiniciamos el juego al colisionar.
+                    reinicio();
+                    
+                    // Almacenamiento de Maxima Puntuación.
+                    maxPuntos = puntos;
+                    textoMax.setText(String.valueOf(puntos));
+                } else {
+                    //puntos.
+                    if (colisionObjVacia2 == true) {
+                        puntos ++;
+                        texto.setText(String.valueOf(puntos));
+                    }
                 }
-            }
+
+            } // Final Handle
         }; // Final Animación.
         
         // Movimiento del coche.
