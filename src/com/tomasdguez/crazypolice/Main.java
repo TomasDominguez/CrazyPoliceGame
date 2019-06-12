@@ -57,9 +57,12 @@ public class Main extends Application {
     int posObsX  = 250;
     int posObsX_B = (posObsX * lineaDer) - limitDer;
     int posObsX_C = (posObsX * lineaIzq) / limitIzq;
+    int posObsX_D = (posObsX * lineaIzq) * limitIzq;
+    
     int posObsY;
     int posObsY_B = posObsY / 2;
     int posObsY_C = posObsY / 4;
+    int posObsY_D = posObsY / 6;
     
     int velCoche = 0;
     int posCocheX = anchuraVentana/2;
@@ -83,6 +86,7 @@ public class Main extends Application {
     Group obstA = new Group();
     Group obstB = new Group();
     Group obstC = new Group();
+    Group obstD = new Group();
     
     Text texto;
     Text textoMax;
@@ -94,12 +98,16 @@ public class Main extends Application {
        texto.setText(String.valueOf(puntos));
        
        random = new Random();
+       
        posObsX = random.nextInt(anchuraVentana);
        posObsX_B = random.nextInt(anchuraVentana/2);
        posObsX_C = random.nextInt(anchuraVentana/4);
+       posObsX_D = random.nextInt(anchuraVentana/4);
+       
        posObsY = random.nextInt(alturaVentana);
        posObsY_B = random.nextInt(alturaVentana/4);
        posObsY_C = random.nextInt(alturaVentana/2);
+       posObsY_D = random.nextInt(anchuraVentana/4);
        
        System.out.println("PosX: "+ posObsX + " PosY: "+ posObsY);
        System.out.println("posY A: " + posObsY + " posY B: "+posObsY_B + " posY_C: "+posObsY_C);
@@ -187,6 +195,18 @@ public class Main extends Application {
         
         // Añadiendo al grupo la imagen y el poligono además de darle las posiciones.
         obstC.getChildren().addAll(obstaculoC, polObs3);
+        
+        // Cuarto Obstaculo del juego..
+        Image obsD = new Image("rama.png", 160, 100, false, false);
+        ImageView obstaculoD = new ImageView();
+        obstaculoD.setImage(obsD);
+        
+        Rectangle polObs4 = new Rectangle(0, 0, 160, 100);
+        polObs4.setFill(javafx.scene.paint.Color.RED);
+        polObs4.setOpacity(0.0);
+        
+        // Añadiendo al grupo la imagen y el poligono además de darle las posiciones.
+        obstD.getChildren().addAll(obstaculoD, polObs4);
 
         // Declaramos las lineas laterales de la carretera.
         Line lineLeft = new Line (anchuraVentana/6, alturaVentana, anchuraVentana/6, alturaVentana - 600);
@@ -219,7 +239,8 @@ public class Main extends Application {
                 textoMax, 
                 obstB, 
                 obstA, 
-                obstC, 
+                obstC,
+                obstD,
                 player);
          
         // Cominezo de la animación.
@@ -230,14 +251,17 @@ public class Main extends Application {
                 obstA.setLayoutX(posObsX);
                 obstB.setLayoutX(posObsX_B);
                 obstC.setLayoutX(posObsX_C);
+                obstD.setLayoutX(posObsX_D);
                 
                 obstA.setLayoutY(posObsY);
                 obstB.setLayoutY(posObsY_B);
                 obstC.setLayoutY(posObsY_C);
+                obstD.setLayoutY(posObsY_D);
                 
                 posObsY += 2;
                 posObsY_B += 2;
                 posObsY_C += 2;
+                posObsY_D += 2;
                 
                 if( posObsY >= alturaVentana){
                     
@@ -256,6 +280,10 @@ public class Main extends Application {
                     posObsX_C = random.nextInt(anchuraVentana - 300);
                 }
                 
+                if ( posObsY_D >= alturaVentana) {
+                    posObsY_D = random.nextInt(alturaVentana - 300) -alturaVentana;
+                    posObsX_D = random.nextInt(anchuraVentana - 300);
+                }
                 
                 System.out.println("posY A: " + posObsY + " posY B: "+posObsY_B + " posY C: "+posObsY_C);
                 System.out.println("posX A: " + posObsX + " posX B: "+posObsX_B + " posX C: "+posObsX_C);
@@ -291,12 +319,14 @@ public class Main extends Application {
                 Shape colisionObj = Shape.intersect(rCoche, polObs);
                 Shape colisionObj2 = Shape.intersect(rCoche, polObs2);
                 Shape colisionObj3 = Shape.intersect(rCoche, polObs3);
+                Shape colisionObj4 = Shape.intersect(rCoche, polObs4);
                 boolean colisionObjVacia = colisionObj.getBoundsInLocal().isEmpty();
                 boolean colisionObjVacia2 = colisionObj2.getBoundsInLocal().isEmpty();
                 boolean colisionObjVacia3 = colisionObj3.getBoundsInLocal().isEmpty();
+                boolean colisionObjVacia4 = colisionObj4.getBoundsInLocal().isEmpty();
                 
                 if (colisionObjVacia == false) {
-                    System.out.println("Hay Colision con Primer Objeto");
+                    System.out.println("Hay Colision con Primer ");
                     
                     // Almacenamiento de Maxima Puntuación.
                     maxPuntos = puntos;
@@ -348,61 +378,87 @@ public class Main extends Application {
                     }
                 }
                 
+                if (colisionObjVacia4 == false) {
+                    System.out.println("Hay Colision Con tercer Objeto");
+                    
+                    // Almacenamiento de Maxima Puntuación.
+                    maxPuntos = puntos;
+                    textoMax.setText(String.valueOf(puntos));
+                    
+                    // Reiniciamos el juego al colisionar.
+                    reinicio();
+                    
+                } else {
+                    //puntos.
+                    if (colisionObjVacia4 == true) {
+                        puntos ++;
+                        texto.setText(String.valueOf(puntos)); 
+                    }
+                }
+                
                 // Aumento de Velocidad Segun puntuación.
-                if (colisionObjVacia2 == true && colisionObjVacia == true && puntos > 500) {
+                if (colisionObjVacia2 == true && colisionObjVacia == true && colisionObjVacia3 == true && colisionObjVacia4 == true && puntos > 500) {
                     // Aumentamos velocidad.
                     posObsY += 1;
                     posObsY_B += 1;
                     posObsY_C += 1;
+                    posObsY_D += 1;
                 }
                 
-                if (colisionObjVacia2 == true && colisionObjVacia == true && puntos > 1000) {
+                if (colisionObjVacia2 == true && colisionObjVacia == true && colisionObjVacia3 == true && colisionObjVacia4 == true && puntos > 1000) {
                     // Aumentamos velocidad.
                     posObsY += 1;
                     posObsY_B += 1;
                     posObsY_C += 1;
+                    posObsY_D += 1;
                 }
                 
-                if (colisionObjVacia2 == true && colisionObjVacia == true && puntos > 1500) {
+                if (colisionObjVacia2 == true && colisionObjVacia == true && colisionObjVacia3 == true && colisionObjVacia4 == true && puntos > 1500) {
                     // Aumentamos velocidad.
                     posObsY += 1;
                     posObsY_B += 1;
                     posObsY_C += 1;
+                    posObsY_D += 1;
                 }
                 
-                if (colisionObjVacia2 == true && colisionObjVacia == true && puntos > 2000) {
+                if (colisionObjVacia2 == true && colisionObjVacia == true && colisionObjVacia3 == true && colisionObjVacia4 == true && puntos > 2000) {
                     // Aumentamos velocidad.
                     posObsY += 1;
                     posObsY_B += 1;
                     posObsY_C += 1;
+                    posObsY_D += 1;
 
                 }
-                if (colisionObjVacia2 == true && colisionObjVacia == true && puntos > 2500) {
+                if (colisionObjVacia2 == true && colisionObjVacia == true && colisionObjVacia3 == true && colisionObjVacia4 == true && puntos > 2500) {
                     // Aumentamos velocidad.
                     posObsY += 1;
                     posObsY_B += 1;
                     posObsY_C += 1;
+                    posObsY_D += 1;
                 }
                 
-                if (colisionObjVacia2 == true && colisionObjVacia == true && puntos > 3000) {
+                if (colisionObjVacia2 == true && colisionObjVacia == true && colisionObjVacia3 == true && colisionObjVacia4 == true && puntos > 3000) {
                     // Aumentamos velocidad.
                     posObsY += 1;
                     posObsY_B += 1;
                     posObsY_C += 1;
+                    posObsY_D += 1;
                 }
                 
-                if (colisionObjVacia2 == true && colisionObjVacia == true && puntos > 3500) {
+                if (colisionObjVacia2 == true && colisionObjVacia == true && colisionObjVacia3 == true && colisionObjVacia4 == true && puntos > 3500) {
                     // Aumentamos velocidad.
                     posObsY += 1;
                     posObsY_B += 1;
                     posObsY_C += 1;
+                    posObsY_D += 1;
                 }
                 
-                if (colisionObjVacia2 == true && colisionObjVacia == true && puntos > 4000) {
+                if (colisionObjVacia2 == true && colisionObjVacia == true && colisionObjVacia3 == true && colisionObjVacia4 == true && puntos > 4000) {
                     // Aumentamos velocidad.
                     posObsY += 1;
                     posObsY_B += 1;
                     posObsY_C += 1;
+                    posObsY_D += 1;
                 }
 
             } // Final Handle
