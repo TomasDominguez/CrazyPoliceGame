@@ -11,6 +11,8 @@
 package com.tomasdguez.crazypolice;
 
 import static java.awt.SystemColor.text;
+import static java.lang.Math.random;
+import static java.lang.StrictMath.random;
 import java.util.Random;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
@@ -65,8 +67,8 @@ public class Main extends Application {
     int posFondoX = 100;
     int posFondoY = 0;
     int posFondoY_2 = -600;
-    int posFondoX_Ran = posCocheX/2;
-    int posFondoY_Ran = posCocheY;
+    int posFondoX_Ran = posFondoX;
+    int posFondoY_Ran = posFondoY;
     
     int puntos;
     int maxPuntos;
@@ -79,15 +81,19 @@ public class Main extends Application {
     
     Text texto;
     Text textoMax;
+    Random random;
     
     // Metodo de reinicio.
     public void reinicio() {
        puntos = 0;
        texto.setText(String.valueOf(puntos));
        
-       Random random = new Random();
-       posObsX = random.nextInt(posFondoX_Ran);
-       posObsY = random.nextInt(posFondoY_Ran);
+       random = new Random();
+       posObsX = random.nextInt(limitIzq);
+       posObsY = random.nextInt(alturaVentana/2);
+       
+       System.out.println("PosX: "+ posObsX + " PosY: "+ posObsY);
+
     }
     
     @Override
@@ -118,6 +124,24 @@ public class Main extends Application {
         pistaFondo2.setLayoutX(posFondoX);
         pistaFondo2.setLayoutY(posFondoY_2);
         
+        // Marcadores de Puntuación.
+        texto = new Text();
+        texto.setText("Puntos:  " + puntos);
+        texto.setTranslateX(alturaVentana-595);
+        texto.setTranslateY(anchuraVentana-580);
+        texto.setWrappingWidth(200);
+        texto.setFill(Color.WHITE);
+        
+        textoMax = new Text();
+        textoMax.setText("Puntos Mx: "+ maxPuntos);
+        textoMax.setTranslateX(alturaVentana-595);
+        textoMax.setTranslateY(anchuraVentana-550);
+        textoMax.setWrappingWidth(200);
+        textoMax.setFill(Color.WHITE);
+        
+        // Llamada al metodo de reinicio.
+        reinicio();
+        
         // Primer Obstaculo del juego.
         Image obsA = new Image("a.png", 50, 50, false, false);
         ImageView obstaculoA = new ImageView();
@@ -129,9 +153,8 @@ public class Main extends Application {
         
         // Añadiendo al grupo la imagen y el poligono además de darle las posiciones.
         obstA.getChildren().addAll(obstaculoA, polObs);
-        obstA.setLayoutX(posFondoX_Ran);
-        obstA.setLayoutY(posFondoY_Ran);
-        
+        obstA.setLayoutY(posObsY*2);
+
         // Segundo Obstaculo del juego..
         Image obsB = new Image("b.png", 50, 50, false, false);
         ImageView obstaculoB = new ImageView();
@@ -143,9 +166,8 @@ public class Main extends Application {
         
         // Añadiendo al grupo la imagen y el poligono además de darle las posiciones.
         obstB.getChildren().addAll(obstaculoB, polObs2);
-        obstB.setLayoutX(posFondoX_Ran/2);
-        obstB.setLayoutY(posFondoY_Ran/3);
-        
+        obstB.setLayoutY(posObsY*4);
+
         // Declaramos las lineas laterales de la carretera.
         Line lineLeft = new Line (anchuraVentana/6, alturaVentana, anchuraVentana/6, alturaVentana - 600);
         lineLeft.setStroke(Color.WHITE);
@@ -167,36 +189,28 @@ public class Main extends Application {
         player.getChildren().addAll(jugador, rCoche);
         player.setTranslateX(posCocheX);
         player.setTranslateY(posCocheY);
-        
-        // Marcadores de Puntuación.
-        texto = new Text();
-        texto.setText("Puntos:  " + puntos);
-        texto.setTranslateX(alturaVentana-595);
-        texto.setTranslateY(anchuraVentana-580);
-        texto.setWrappingWidth(200);
-        texto.setFill(Color.WHITE);
-        
-        textoMax = new Text();
-        textoMax.setText("Puntos Mx: "+ maxPuntos);
-        textoMax.setTranslateX(alturaVentana-595);
-        textoMax.setTranslateY(anchuraVentana-550);
-        textoMax.setWrappingWidth(200);
-        textoMax.setFill(Color.WHITE);
             
         // Muestra de imagenes de los grupos                
         root.getChildren().addAll( pistaFondo1, pistaFondo2, lineLeft, lineRight, texto, textoMax, obstB, obstA, player);
-        
-        // Llamada al metodo de reinicio.
-        reinicio();
-        
+         
         // Cominezo de la animación.
         AnimationTimer animation = new AnimationTimer(){
             @Override
             public void handle(long now) {
                 //Movimiento Obstaculos
+                obstA.setLayoutX(posObsX*4);
+                obstB.setLayoutX(posObsX*2);
                 obstA.setLayoutY(posObsY);
                 obstB.setLayoutY(posObsY);
                 posObsY += 2;
+                
+                if( posObsY >= alturaVentana){
+                    posObsY = random.nextInt(alturaVentana-599);
+                    posObsX = random.nextInt(anchuraVentana-400);
+                }
+                
+                System.out.println("Animation X: "+ posObsX+ " Animation Y: "+ posObsY);
+                
                 
                 // Pruena Movimiento Fondo.
                 pistaFondo1.setLayoutY(posFondoY);
@@ -234,11 +248,15 @@ public class Main extends Application {
                 if (colisionObjVacia == false) {
                     System.out.println("Hay Colision");
                     
-                    // Reiniciamos el juego al colisionar.
-                    reinicio();
                     // Almacenamiento de Maxima Puntuación.
                     maxPuntos = puntos;
                     textoMax.setText(String.valueOf(maxPuntos));
+                    
+                    // Aumentamos velocidad.
+                    posObsY += 4;
+                    
+                    // Reiniciamos el juego al colisionar.
+                    reinicio();
                 } else {
                     //puntos.
                     if (colisionObjVacia == true) {
@@ -250,12 +268,16 @@ public class Main extends Application {
                 if (colisionObjVacia2 == false) {
                     System.out.println("Hay Colision");
                     
-                    // Reiniciamos el juego al colisionar.
-                    reinicio();
-                    
                     // Almacenamiento de Maxima Puntuación.
                     maxPuntos = puntos;
                     textoMax.setText(String.valueOf(puntos));
+                    // Aumentamos velocidad.
+                    posObsY += 4;
+                    
+                    // Reiniciamos el juego al colisionar.
+                    reinicio();
+                    
+
                 } else {
                     //puntos.
                     if (colisionObjVacia2 == true) {
