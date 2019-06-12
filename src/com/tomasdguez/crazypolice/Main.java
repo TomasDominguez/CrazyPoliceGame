@@ -44,7 +44,7 @@ public class Main extends Application {
     int alturaVentana = 600;
     int anchuraVentana = 600;
     
-    int lineaDer = anchuraVentana - 600;
+    int lineaDer = anchuraVentana - 400;
     int lineaIzq = anchuraVentana - 200;
     int limitDer = -230;
     int limitIzq = 130;
@@ -54,8 +54,12 @@ public class Main extends Application {
     double velObsX = 3;
     double velObsY = 3;
     
-    double posObsX;
-    double posObsY;
+    int posObsX  = 250;
+    int posObsX_B = (posObsX * lineaDer) - limitDer;
+    int posObsX_C = (posObsX * lineaIzq) / limitIzq;
+    int posObsY;
+    int posObsY_B = posObsY / 2;
+    int posObsY_C = posObsY / 4;
     
     int velCoche = 0;
     int posCocheX = anchuraVentana/2;
@@ -78,6 +82,7 @@ public class Main extends Application {
     Group player = new Group();
     Group obstA = new Group();
     Group obstB = new Group();
+    Group obstC = new Group();
     
     Text texto;
     Text textoMax;
@@ -89,10 +94,15 @@ public class Main extends Application {
        texto.setText(String.valueOf(puntos));
        
        random = new Random();
-       posObsX = random.nextInt(limitIzq);
-       posObsY = random.nextInt(alturaVentana/2);
+       posObsX = random.nextInt(anchuraVentana);
+       posObsX_B = random.nextInt(anchuraVentana/2);
+       posObsX_C = random.nextInt(anchuraVentana/4);
+       posObsY = random.nextInt(alturaVentana);
+       posObsY_B = random.nextInt(alturaVentana/4);
+       posObsY_C = random.nextInt(alturaVentana/2);
        
        System.out.println("PosX: "+ posObsX + " PosY: "+ posObsY);
+       System.out.println("posY A: " + posObsY + " posY B: "+posObsY_B + " posY_C: "+posObsY_C);
 
     }
     
@@ -153,7 +163,6 @@ public class Main extends Application {
         
         // Añadiendo al grupo la imagen y el poligono además de darle las posiciones.
         obstA.getChildren().addAll(obstaculoA, polObs);
-        obstA.setLayoutY(posObsY*2);
 
         // Segundo Obstaculo del juego..
         Image obsB = new Image("b.png", 50, 50, false, false);
@@ -166,7 +175,18 @@ public class Main extends Application {
         
         // Añadiendo al grupo la imagen y el poligono además de darle las posiciones.
         obstB.getChildren().addAll(obstaculoB, polObs2);
-        obstB.setLayoutY(posObsY*4);
+        
+        // Tercer Obstaculo del juego..
+        Image obsC = new Image("c.png", 50, 50, false, false);
+        ImageView obstaculoC = new ImageView();
+        obstaculoC.setImage(obsC);
+        
+        Circle polObs3 = new Circle(25, 20, 25);
+        polObs3.setFill(javafx.scene.paint.Color.RED);
+        polObs3.setOpacity(0.0);
+        
+        // Añadiendo al grupo la imagen y el poligono además de darle las posiciones.
+        obstC.getChildren().addAll(obstaculoC, polObs3);
 
         // Declaramos las lineas laterales de la carretera.
         Line lineLeft = new Line (anchuraVentana/6, alturaVentana, anchuraVentana/6, alturaVentana - 600);
@@ -191,26 +211,54 @@ public class Main extends Application {
         player.setTranslateY(posCocheY);
             
         // Muestra de imagenes de los grupos                
-        root.getChildren().addAll( pistaFondo1, pistaFondo2, lineLeft, lineRight, texto, textoMax, obstB, obstA, player);
+        root.getChildren().addAll( pistaFondo1, 
+                pistaFondo2, 
+                lineLeft, 
+                lineRight, 
+                texto, 
+                textoMax, 
+                obstB, 
+                obstA, 
+                obstC, 
+                player);
          
         // Cominezo de la animación.
         AnimationTimer animation = new AnimationTimer(){
             @Override
             public void handle(long now) {
                 //Movimiento Obstaculos
-                obstA.setLayoutX(posObsX*4);
-                obstB.setLayoutX(posObsX*2);
+                obstA.setLayoutX(posObsX);
+                obstB.setLayoutX(posObsX_B);
+                obstC.setLayoutX(posObsX_C);
+                
                 obstA.setLayoutY(posObsY);
-                obstB.setLayoutY(posObsY);
+                obstB.setLayoutY(posObsY_B);
+                obstC.setLayoutY(posObsY_C);
+                
                 posObsY += 2;
+                posObsY_B += 2;
+                posObsY_C += 2;
                 
                 if( posObsY >= alturaVentana){
-                    posObsY = random.nextInt(alturaVentana-599);
-                    posObsX = random.nextInt(anchuraVentana-400);
+                    
+                    posObsY = random.nextInt(alturaVentana - 300) -alturaVentana;
+                    posObsX = random.nextInt(anchuraVentana - 300);   
                 }
                 
-                System.out.println("Animation X: "+ posObsX+ " Animation Y: "+ posObsY);
+                if ( posObsY_B >= alturaVentana) {
+                    
+                    posObsY_B = random.nextInt(alturaVentana - 300) -alturaVentana;
+                    posObsX_B = random.nextInt(anchuraVentana - 300);
+                }
                 
+                if ( posObsY_C >= alturaVentana) {
+                    posObsY_C = random.nextInt(alturaVentana - 300) -alturaVentana;
+                    posObsX_C = random.nextInt(anchuraVentana - 300);
+                }
+                
+                
+                System.out.println("posY A: " + posObsY + " posY B: "+posObsY_B + " posY C: "+posObsY_C);
+                System.out.println("posX A: " + posObsX + " posX B: "+posObsX_B + " posX C: "+posObsX_C);
                 
                 // Pruena Movimiento Fondo.
                 pistaFondo1.setLayoutY(posFondoY);
@@ -242,18 +290,17 @@ public class Main extends Application {
                 // Colisión del obtjeto con el coche.
                 Shape colisionObj = Shape.intersect(rCoche, polObs);
                 Shape colisionObj2 = Shape.intersect(rCoche, polObs2);
+                Shape colisionObj3 = Shape.intersect(rCoche, polObs3);
                 boolean colisionObjVacia = colisionObj.getBoundsInLocal().isEmpty();
                 boolean colisionObjVacia2 = colisionObj2.getBoundsInLocal().isEmpty();
+                boolean colisionObjVacia3 = colisionObj3.getBoundsInLocal().isEmpty();
                 
                 if (colisionObjVacia == false) {
-                    System.out.println("Hay Colision");
+                    System.out.println("Hay Colision con Primer Objeto");
                     
                     // Almacenamiento de Maxima Puntuación.
                     maxPuntos = puntos;
                     textoMax.setText(String.valueOf(maxPuntos));
-                    
-                    // Aumentamos velocidad.
-                    posObsY += 4;
                     
                     // Reiniciamos el juego al colisionar.
                     reinicio();
@@ -266,24 +313,96 @@ public class Main extends Application {
                 }
                 
                 if (colisionObjVacia2 == false) {
-                    System.out.println("Hay Colision");
+                    System.out.println("Hay Colision Con segundo Objeto");
                     
                     // Almacenamiento de Maxima Puntuación.
                     maxPuntos = puntos;
                     textoMax.setText(String.valueOf(puntos));
-                    // Aumentamos velocidad.
-                    posObsY += 4;
                     
                     // Reiniciamos el juego al colisionar.
                     reinicio();
                     
-
                 } else {
                     //puntos.
                     if (colisionObjVacia2 == true) {
                         puntos ++;
-                        texto.setText(String.valueOf(puntos));
+                        texto.setText(String.valueOf(puntos)); 
                     }
+                }
+                
+                if (colisionObjVacia3 == false) {
+                    System.out.println("Hay Colision Con tercer Objeto");
+                    
+                    // Almacenamiento de Maxima Puntuación.
+                    maxPuntos = puntos;
+                    textoMax.setText(String.valueOf(puntos));
+                    
+                    // Reiniciamos el juego al colisionar.
+                    reinicio();
+                    
+                } else {
+                    //puntos.
+                    if (colisionObjVacia3 == true) {
+                        puntos ++;
+                        texto.setText(String.valueOf(puntos)); 
+                    }
+                }
+                
+                // Aumento de Velocidad Segun puntuación.
+                if (colisionObjVacia2 == true && colisionObjVacia == true && puntos > 500) {
+                    // Aumentamos velocidad.
+                    posObsY += 1;
+                    posObsY_B += 1;
+                    posObsY_C += 1;
+                }
+                
+                if (colisionObjVacia2 == true && colisionObjVacia == true && puntos > 1000) {
+                    // Aumentamos velocidad.
+                    posObsY += 1;
+                    posObsY_B += 1;
+                    posObsY_C += 1;
+                }
+                
+                if (colisionObjVacia2 == true && colisionObjVacia == true && puntos > 1500) {
+                    // Aumentamos velocidad.
+                    posObsY += 1;
+                    posObsY_B += 1;
+                    posObsY_C += 1;
+                }
+                
+                if (colisionObjVacia2 == true && colisionObjVacia == true && puntos > 2000) {
+                    // Aumentamos velocidad.
+                    posObsY += 1;
+                    posObsY_B += 1;
+                    posObsY_C += 1;
+
+                }
+                if (colisionObjVacia2 == true && colisionObjVacia == true && puntos > 2500) {
+                    // Aumentamos velocidad.
+                    posObsY += 1;
+                    posObsY_B += 1;
+                    posObsY_C += 1;
+                }
+                
+                if (colisionObjVacia2 == true && colisionObjVacia == true && puntos > 3000) {
+                    // Aumentamos velocidad.
+                    posObsY += 1;
+                    posObsY_B += 1;
+                    posObsY_C += 1;
+                }
+                
+                if (colisionObjVacia2 == true && colisionObjVacia == true && puntos > 3500) {
+                    // Aumentamos velocidad.
+                    posObsY += 1;
+                    posObsY_B += 1;
+                    posObsY_C += 1;
+                }
+                
+                if (colisionObjVacia2 == true && colisionObjVacia == true && puntos > 4000) {
+                    // Aumentamos velocidad.
+                    posObsY += 1;
+                    posObsY_B += 1;
+                    posObsY_C += 1;
                 }
 
             } // Final Handle
