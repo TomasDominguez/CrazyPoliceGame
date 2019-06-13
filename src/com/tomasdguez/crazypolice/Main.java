@@ -46,18 +46,18 @@ public class Main extends Application {
     
     int lineaDer = anchuraVentana - 400;
     int lineaIzq = anchuraVentana - 200;
-    int limitDer = -230;
-    int limitIzq = 130;
+    int limiteIzq = -230;
+    int limiteDer = 130;
     
     double velObsActual = 3;
     double dificultad = 0.7;
     double velObsX = 3;
-    double velObsY = 3;
+    double velObsY = 2;
     
     int posObsX  = 250;
-    int posObsX_B = (posObsX * lineaDer) - limitDer;
-    int posObsX_C = (posObsX * lineaIzq) / limitIzq;
-    int posObsX_D = (posObsX * lineaIzq) * limitIzq;
+    int posObsX_B = (posObsX * limiteDer) - limiteDer;
+    int posObsX_C = (posObsX * lineaIzq) / limiteIzq;
+    int posObsX_D = (posObsX * lineaIzq) * limiteIzq;
     
     int posObsY;
     int posObsY_B = posObsY / 2;
@@ -76,6 +76,7 @@ public class Main extends Application {
     int posFondoY_2 = -600;
     int posFondoX_Ran = posFondoX;
     int posFondoY_Ran = posFondoY;
+    int velFondo = 2;
     
     int puntos;
     int maxPuntos;
@@ -97,20 +98,23 @@ public class Main extends Application {
        puntos = 0;
        texto.setText(String.valueOf(puntos));
        
+       velObsY = 2;
+       velFondo = 2;
+       
        random = new Random();
        
-       posObsX = random.nextInt(anchuraVentana);
-       posObsX_B = random.nextInt(anchuraVentana/2);
-       posObsX_C = random.nextInt(anchuraVentana/4);
-       posObsX_D = random.nextInt(anchuraVentana/4);
+       posObsX = random.nextInt(anchuraVentana - limiteDer) - limiteIzq;
+       posObsX_B = random.nextInt(anchuraVentana - limiteDer) - limiteIzq;
+       posObsX_C = random.nextInt(anchuraVentana - limiteDer) - limiteIzq;
+       posObsX_D = random.nextInt(anchuraVentana - limiteDer) - limiteIzq;
        
        posObsY = random.nextInt(alturaVentana);
        posObsY_B = random.nextInt(alturaVentana/4);
        posObsY_C = random.nextInt(alturaVentana/2);
        posObsY_D = random.nextInt(anchuraVentana/4);
        
-       System.out.println("PosX: "+ posObsX + " PosY: "+ posObsY);
-       System.out.println("posY A: " + posObsY + " posY B: "+posObsY_B + " posY_C: "+posObsY_C);
+       //System.out.println("PosX: "+ posObsX + " PosY: "+ posObsY);
+       //System.out.println("posY A: " + posObsY + " posY B: "+posObsY_B + " posY_C: "+posObsY_C);
 
     }
     
@@ -244,7 +248,8 @@ public class Main extends Application {
                 player);
          
         // Cominezo de la animación.
-        AnimationTimer animation = new AnimationTimer(){
+        AnimationTimer animation; // Final Animación.
+        animation = new AnimationTimer(){
             @Override
             public void handle(long now) {
                 //Movimiento Obstaculos
@@ -258,21 +263,21 @@ public class Main extends Application {
                 obstC.setLayoutY(posObsY_C);
                 obstD.setLayoutY(posObsY_D);
                 
-                posObsY += 2;
-                posObsY_B += 2;
-                posObsY_C += 2;
-                posObsY_D += 2;
+                posObsY += velObsY;
+                posObsY_B += velObsY;
+                posObsY_C += velObsY;
+                posObsY_D += velObsY;
                 
                 if( posObsY >= alturaVentana){
                     
                     posObsY = random.nextInt(alturaVentana - 300) -alturaVentana;
-                    posObsX = random.nextInt(anchuraVentana - 300);   
+                    posObsX = random.nextInt(anchuraVentana - limiteDer) - limiteIzq;   
                 }
                 
                 if ( posObsY_B >= alturaVentana) {
                     
                     posObsY_B = random.nextInt(alturaVentana - 300) -alturaVentana;
-                    posObsX_B = random.nextInt(anchuraVentana - 300);
+                    posObsX_B = random.nextInt(anchuraVentana - limiteDer) - limiteIzq;
                 }
                 
                 if ( posObsY_C >= alturaVentana) {
@@ -282,34 +287,34 @@ public class Main extends Application {
                 
                 if ( posObsY_D >= alturaVentana) {
                     posObsY_D = random.nextInt(alturaVentana - 300) -alturaVentana;
-                    posObsX_D = random.nextInt(anchuraVentana - 300);
+                    posObsX_D = random.nextInt(anchuraVentana - limiteDer) - limiteIzq;
                 }
                 
-                System.out.println("posY A: " + posObsY + " posY B: "+posObsY_B + " posY C: "+posObsY_C);
-                System.out.println("posX A: " + posObsX + " posX B: "+posObsX_B + " posX C: "+posObsX_C);
+                //System.out.println("posY A: " + posObsY + " posY B: "+posObsY_B + " posY C: "+posObsY_C);
+                //System.out.println("posX A: " + posObsX + " posX B: "+posObsX_B + " posX C: "+posObsX_C);
                 
                 // Pruena Movimiento Fondo.
                 pistaFondo1.setLayoutY(posFondoY);
                 pistaFondo2.setLayoutY(posFondoY_2);
-                posFondoY += 2;
-                posFondoY_2 +=2;
+                posFondoY += velFondo;
+                posFondoY_2 += velFondo;
                 
-                if( posFondoY == 600){
-                    posFondoY = -600;
+                if( posFondoY >= 600){
+                    posFondoY = -600 + (posFondoY - 600);
                 }
-                if( posFondoY_2 == 600){
-                    posFondoY_2 = -600;
+                if( posFondoY_2 >= 600){
+                    posFondoY_2 = -600 + (posFondoY_2 - 600);
                 }
                 
                 //System.out.println("Pos Fondo 1: " + posFondoY + " Pos Fondo 2: "+ posFondoY_2);
                 
                 // Movimiento del coche.
                 posCocheX += velCoche;
-                if(posCocheX < limitDer){
-                    posCocheX = limitDer;
+                if(posCocheX < limiteIzq){
+                    posCocheX = limiteIzq;
                 } else {
-                    if (posCocheX > limitIzq) {
-                        posCocheX = limitIzq;
+                    if (posCocheX > limiteDer) {
+                        posCocheX = limiteDer;
                     }
                 }
                 player.setLayoutX(posCocheX);
@@ -326,7 +331,7 @@ public class Main extends Application {
                 boolean colisionObjVacia4 = colisionObj4.getBoundsInLocal().isEmpty();
                 
                 if (colisionObjVacia == false) {
-                    System.out.println("Hay Colision con Primer ");
+                    System.out.println("Hay Colision con Primer Objeto ");
                     
                     // Almacenamiento de Maxima Puntuación.
                     maxPuntos = puntos;
@@ -361,7 +366,7 @@ public class Main extends Application {
                 }
                 
                 if (colisionObjVacia3 == false) {
-                    System.out.println("Hay Colision Con tercer Objeto");
+                    System.out.println("Hay Colision Con Tercer Objeto");
                     
                     // Almacenamiento de Maxima Puntuación.
                     maxPuntos = puntos;
@@ -379,7 +384,7 @@ public class Main extends Application {
                 }
                 
                 if (colisionObjVacia4 == false) {
-                    System.out.println("Hay Colision Con tercer Objeto");
+                    System.out.println("Hay Colision Con Cuarto Objeto");
                     
                     // Almacenamiento de Maxima Puntuación.
                     maxPuntos = puntos;
@@ -396,73 +401,15 @@ public class Main extends Application {
                     }
                 }
                 
-                // Aumento de Velocidad Segun puntuación.
-                if (colisionObjVacia2 == true && colisionObjVacia == true && colisionObjVacia3 == true && colisionObjVacia4 == true && puntos > 500) {
-                    // Aumentamos velocidad.
-                    posObsY += 1;
-                    posObsY_B += 1;
-                    posObsY_C += 1;
-                    posObsY_D += 1;
-                }
+                // Aumento de Velocidad Segun puntuación. 
+                if(puntos % 500 == 0) {
+                    velObsY ++;
+                    velFondo ++;
+                } 
                 
-                if (colisionObjVacia2 == true && colisionObjVacia == true && colisionObjVacia3 == true && colisionObjVacia4 == true && puntos > 1000) {
-                    // Aumentamos velocidad.
-                    posObsY += 1;
-                    posObsY_B += 1;
-                    posObsY_C += 1;
-                    posObsY_D += 1;
-                }
-                
-                if (colisionObjVacia2 == true && colisionObjVacia == true && colisionObjVacia3 == true && colisionObjVacia4 == true && puntos > 1500) {
-                    // Aumentamos velocidad.
-                    posObsY += 1;
-                    posObsY_B += 1;
-                    posObsY_C += 1;
-                    posObsY_D += 1;
-                }
-                
-                if (colisionObjVacia2 == true && colisionObjVacia == true && colisionObjVacia3 == true && colisionObjVacia4 == true && puntos > 2000) {
-                    // Aumentamos velocidad.
-                    posObsY += 1;
-                    posObsY_B += 1;
-                    posObsY_C += 1;
-                    posObsY_D += 1;
-
-                }
-                if (colisionObjVacia2 == true && colisionObjVacia == true && colisionObjVacia3 == true && colisionObjVacia4 == true && puntos > 2500) {
-                    // Aumentamos velocidad.
-                    posObsY += 1;
-                    posObsY_B += 1;
-                    posObsY_C += 1;
-                    posObsY_D += 1;
-                }
-                
-                if (colisionObjVacia2 == true && colisionObjVacia == true && colisionObjVacia3 == true && colisionObjVacia4 == true && puntos > 3000) {
-                    // Aumentamos velocidad.
-                    posObsY += 1;
-                    posObsY_B += 1;
-                    posObsY_C += 1;
-                    posObsY_D += 1;
-                }
-                
-                if (colisionObjVacia2 == true && colisionObjVacia == true && colisionObjVacia3 == true && colisionObjVacia4 == true && puntos > 3500) {
-                    // Aumentamos velocidad.
-                    posObsY += 1;
-                    posObsY_B += 1;
-                    posObsY_C += 1;
-                    posObsY_D += 1;
-                }
-                
-                if (colisionObjVacia2 == true && colisionObjVacia == true && colisionObjVacia3 == true && colisionObjVacia4 == true && puntos > 4000) {
-                    // Aumentamos velocidad.
-                    posObsY += 1;
-                    posObsY_B += 1;
-                    posObsY_C += 1;
-                    posObsY_D += 1;
-                }
-
+                System.out.println("Velocidad Obejto: "+ velObsY + " Velocidad Fondo: "+velFondo);
             } // Final Handle
-        }; // Final Animación.
+        };
         
         // Movimiento del coche.
         scene.setOnKeyPressed((KeyEvent event) -> {
